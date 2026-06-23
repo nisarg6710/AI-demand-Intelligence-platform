@@ -1,0 +1,16 @@
+venv/
+__pycache__/
+
+*.pyc
+*.pyo
+
+data/raw/
+data/processed/
+
+artifacts/
+
+.mlflow/
+
+.ipynb_checkpoints/
+
+.env
