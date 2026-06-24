@@ -29,3 +29,7 @@ notebook
 nltk
 tqdm
 requests
+
+mysql-connector-python
+SQLAlchemy
+PyMySQL
