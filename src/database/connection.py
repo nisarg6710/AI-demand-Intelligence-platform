@@ -11,7 +11,7 @@ class DatabaseConnection:
         connection = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="YOUR_PASSWORD",
+            password="N96sarg@6710",
             database="demand_intelligence"
         )
 
