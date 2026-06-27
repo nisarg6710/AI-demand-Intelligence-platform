@@ -1,3 +1,59 @@
+CREATE DATABASE demand_intelligence;
+
+show databases;
+
+USE demand_intelligence;
+
+-- calender table:-
+
+CREATE TABLE calendar_dim (
+
+    d VARCHAR(10) PRIMARY KEY,
+
+    date DATE,
+
+    wm_yr_wk INT,
+
+    weekday VARCHAR(20),
+
+    wday INT,
+
+    month INT,
+
+    year INT,
+
+    event_name_1 VARCHAR(100),
+
+    event_type_1 VARCHAR(100),
+
+    event_name_2 VARCHAR(100),
+
+    event_type_2 VARCHAR(100),
+
+    snap_CA BOOLEAN,
+
+    snap_TX BOOLEAN,
+
+    snap_WI BOOLEAN
+);
+
+-- Price table:-
+
+CREATE TABLE price_fact (
+
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+
+    store_id VARCHAR(20),
+
+    item_id VARCHAR(50),
+
+    wm_yr_wk INT,
+
+    sell_price FLOAT
+);
+
+SHOW Tables;
+
 USE demand_intelligence;
 
 CREATE TABLE IF NOT EXISTS calendar_dim (
@@ -28,27 +84,12 @@ CREATE TABLE IF NOT EXISTS item_dim (
     cat_id VARCHAR(50)
 );
 
--- changing the price_fact table
-
-USE demand_intelligence;
-
-DROP TABLE IF EXISTS price_fact;
-
-CREATE TABLE price_fact (
-
+CREATE TABLE IF NOT EXISTS price_fact (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
     store_id VARCHAR(20),
-
     item_id VARCHAR(50),
-
     wm_yr_wk INT,
-
-    sell_price DECIMAL(10, 2),
-
-    PRIMARY KEY (
-        store_id,
-        item_id,
-        wm_yr_wk
-    ),
+    sell_price FLOAT,
 
     FOREIGN KEY (store_id)
         REFERENCES store_dim(store_id),
@@ -56,3 +97,5 @@ CREATE TABLE price_fact (
     FOREIGN KEY (item_id)
         REFERENCES item_dim(item_id)
 );
+
+SHOW Tables;

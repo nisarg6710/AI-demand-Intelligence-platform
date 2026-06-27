@@ -1,0 +1,7 @@
+etl:
+
+  batch_size: 5000
+
+  chunk_size: 50000
+
+  insert_method: executemany

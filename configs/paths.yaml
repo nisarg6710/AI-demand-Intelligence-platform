@@ -1,0 +1,15 @@
+paths:
+
+  raw_data:
+
+    calendar: data/raw/m5/calendar.csv
+
+    sales: data/raw/m5/sales_train_validation.csv
+
+    prices: data/raw/m5/sell_prices.csv
+
+    evaluation: data/raw/m5/sales_train_evaluation.csv
+
+  processed_data:
+
+    root: artifacts/processed

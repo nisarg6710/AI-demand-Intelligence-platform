@@ -1,6 +1,6 @@
 import mysql.connector
-from pathlib import Path
-import yaml
+
+from src.config.settings import Settings
 
 
 class DatabaseConnection:
@@ -8,11 +8,11 @@ class DatabaseConnection:
     @staticmethod
     def connect():
 
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="N96sarg@6710",
-            database="demand_intelligence"
-        )
+        db = Settings.database["database"]
 
-        return connection
+        return mysql.connector.connect(
+            host=db["host"],
+            user=db["user"],
+            password=db["password"],
+            database=db["database"]
+        )
