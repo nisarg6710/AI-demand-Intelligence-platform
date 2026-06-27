@@ -1,34 +1,52 @@
+# ----------------------------
 # Python
+# ----------------------------
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
-
+# ----------------------------
 # Logs
+# ----------------------------
 logs/
 *.log
 
-# Environment
-.env
-
-# Local configuration
-configs/database.yaml
-configs/local.yaml
-configs/*.local.yaml
-
+# ----------------------------
 # Jupyter
+# ----------------------------
 .ipynb_checkpoints/
 
+# ----------------------------
+# VS Code
+# ----------------------------
+.vscode/
+
+# ----------------------------
+# Environment
+# ----------------------------
+.env
+
+# ----------------------------
+# Local Configurations
+# ----------------------------
+configs/database.yaml
+
+# ----------------------------
+# Datasets
+# ----------------------------
+data/raw/
+data/processed/
+data/external/
+
+# Keep folders
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+
+# ----------------------------
 # OS
+# ----------------------------
 .DS_Store
 Thumbs.db
-
-
-# Raw datasets
-data/raw/
-
-# Processed datasets
-data/processed/
-
-# External datasets
-data/external/
