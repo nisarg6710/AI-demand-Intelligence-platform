@@ -16,14 +16,21 @@ price_config = ETLConfig(
 
     target_table="price_fact",
 
-    required_columns=[
+    input_required_columns=[
         "store_id",
         "item_id",
         "wm_yr_wk",
         "sell_price",
     ],
 
-    null_check_columns=[
+    output_required_columns=[
+        "store_id",
+        "item_id",
+        "wm_yr_wk",
+        "sell_price",
+    ],
+
+    output_null_check_columns=[
         "store_id",
         "item_id",
         "wm_yr_wk",

@@ -64,17 +64,29 @@ class ETLPipeline:
 
         DataValidator.validate_not_empty(df)
 
-        DataValidator.validate_columns(
-            df,
-            config.required_columns
-        )
+        ## Validate before transformation
+        if config.input_required_columns:
+            DataValidator.validate_columns(
+                df,
+                config.input_required_columns
+            )
 
+        ## Transform
         df = config.transformer(df)
 
-        DataValidator.validate_nulls(
-            df,
-            config.null_check_columns
-        )
+        ## Validate after transformation
+        if config.output_required_columns:
+            DataValidator.validate_columns(
+                df,
+                config.output_required_columns
+            )
+
+        ## Check for null values aftertransformation
+        if config.output_null_check_columns:
+            DataValidator.validate_nulls(
+                df,
+                config.output_null_check_columns
+            )
 
         loader.load_dataframe(
             df,

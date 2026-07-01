@@ -3,6 +3,8 @@ from src.etl.pipeline import ETLPipeline
 from src.etl.load import ETLLoader
 from src.etl.config import ETLConfig
 
+from src.config.settings import Settings
+
 from src.transforms.dimensions import (
     transform_item_dimension,
     transform_store_dimension,
@@ -14,17 +16,22 @@ item_config = ETLConfig(
 
     transformer=transform_item_dimension,
 
-    source_path="data/raw/m5/sales_train_validation.csv",
+    source_path=Settings.paths["paths"]["raw_data"]["sales"],
 
     target_table="item_dim",
 
-    required_columns=[
+    input_required_columns=[
         "item_id",
         "dept_id",
         "cat_id",
     ],
 
-    null_check_columns=[
+    output_required_columns=[
+        "item_id",
+        "dept_id",
+        "cat_id",
+    ],
+    output_null_check_columns=[
         "item_id",
         "dept_id",
         "cat_id",
@@ -37,16 +44,21 @@ store_config = ETLConfig(
 
     transformer=transform_store_dimension,
 
-    source_path="data/raw/m5/sales_train_validation.csv",
+    source_path=Settings.paths["paths"]["raw_data"]["sales"],
 
     target_table="store_dim",
 
-    required_columns=[
+    input_required_columns=[
         "store_id",
         "state_id",
     ],
 
-    null_check_columns=[
+    output_required_columns=[
+        "store_id",
+        "state_id",
+    ],
+
+    output_null_check_columns=[
         "store_id",
         "state_id",
     ],
