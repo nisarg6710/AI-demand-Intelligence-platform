@@ -12,6 +12,10 @@ SELECT COUNT(*) FROM price_fact;
 
 SELECT COUNT(*) FROM sales_fact;
 
+SELECT * FROM forecast_experiments;
+
+SELECT COUNT(*) FROM forecast_predictions;
+
 SELECT *
 FROM price_fact
 LIMIT 10;
@@ -49,6 +53,7 @@ FROM sales_fact s
 JOIN calendar_dim c
 ON s.d = c.d
 LIMIT 10;
+
 
 
 

@@ -1,6 +1,6 @@
 # 📊 AI Demand Intelligence Platform
 
-An end-to-end AI-powered **Demand Forecasting and Business Intelligence Platform** built using modern Data Engineering, Time Series Forecasting, Machine Learning, Large Language Models (LLMs), Multi-Agent Systems, and MLOps.
+An end-to-end AI-powered **Demand Forecasting and Business Intelligence Platform** built using modern **Data Engineering, Time Series Forecasting, Machine Learning, Large Language Models (LLMs), Multi-Agent Systems, and MLOps**.
 
 The project follows a production-grade workflow, beginning with raw retail data and progressing through scalable ETL pipelines, a MySQL data warehouse, business analytics, forecasting, explainable AI, APIs, dashboards, and cloud deployment.
 
@@ -22,12 +22,15 @@ This project aims to build a complete AI-powered demand intelligence platform ca
 - Designing a production-grade data warehouse
 - Performing business analytics
 - Forecasting product demand
+- Benchmarking multiple forecasting models
+- Tracking forecasting experiments
+- Storing prediction history
 - Explaining forecasts using LLMs
 - Answering business questions through AI agents
 - Serving predictions through APIs
 - Visualizing insights through an interactive dashboard
 
-The emphasis is on **software engineering**, **scalability**, **modularity**, and **production-ready architecture** in addition to forecasting accuracy.
+The emphasis is on **software engineering**, **scalability**, **modularity**, **experiment reproducibility**, and **production-ready architecture** in addition to forecasting accuracy.
 
 ---
 
@@ -49,19 +52,33 @@ The emphasis is on **software engineering**, **scalability**, **modularity**, an
               Exploratory Data Analysis (EDA)
                             │
                             ▼
-            Classical Forecasting Models
+            Production Forecasting Framework
+                            │
+            ┌───────────────┼────────────────┐
+            ▼               ▼                ▼
+     Moving Average      ARIMA          SARIMA
+            │               │                │
+            └───────────────┼────────────────┘
+                            ▼
+                        Prophet
                             │
                             ▼
-          Deep Learning & Transformer Models
+              Experiment Tracking Database
                             │
                             ▼
-             LLM + RAG + Multi-Agent System
+             Deep Learning Forecasting (Next)
                             │
                             ▼
-                 FastAPI Backend Services
+          Transformer Forecasting Models
                             │
                             ▼
-                 React Business Dashboard
+               LLM + RAG + Multi-Agent AI
+                            │
+                            ▼
+                  FastAPI Backend Services
+                            │
+                            ▼
+                  React Business Dashboard
 ```
 
 ---
@@ -85,9 +102,11 @@ The emphasis is on **software engineering**, **scalability**, **modularity**, an
 - Matplotlib
 - Seaborn
 
-## Time Series Analysis
+## Time Series Forecasting
 
-- Facebook Prophet
+- Statsmodels
+- pmdarima
+- Prophet
 
 ## Machine Learning *(Upcoming)*
 
@@ -136,7 +155,13 @@ AI-demand-intelligence-platform/
 │   └── external/
 │
 ├── deployment/
+│
 ├── docs/
+│   ├── business_case/
+│   ├── milestone_01_etl/
+│   ├── milestone_02_eda/
+│   └── milestone_03_forecasting/
+│
 ├── logs/
 ├── notebooks/
 │
@@ -147,6 +172,18 @@ AI-demand-intelligence-platform/
 │   ├── database/
 │   ├── etl/
 │   ├── forecasting/
+│   │   ├── base_model.py
+│   │   ├── moving_average.py
+│   │   ├── arima.py
+│   │   ├── sarima.py
+│   │   ├── prophet_model.py
+│   │   ├── metrics.py
+│   │   ├── registry.py
+│   │   ├── pipeline.py
+│   │   ├── report.py
+│   │   ├── experiment.py
+│   │   └── visualization.py
+│   │
 │   ├── observability/
 │   ├── pipelines/
 │   ├── transforms/
@@ -201,7 +238,7 @@ Loading
 MySQL Data Warehouse
 ```
 
-Current ETL Features
+### Current ETL Features
 
 - Generic CSV extractor
 - Configuration-driven pipelines
@@ -229,9 +266,14 @@ The project uses a **Star Schema** optimized for analytical workloads.
 - `sales_fact`
 - `price_fact`
 
-## Analytics View
+## Analytics Views
 
 - `sales_enriched`
+
+## Forecasting Tables
+
+- `forecast_experiments`
+- `forecast_predictions`
 
 ---
 
@@ -253,6 +295,61 @@ Completed analyses include:
 - Top-selling products
 - Prophet trend decomposition
 - Prophet seasonality decomposition
+
+---
+
+# 📈 Milestone 3 — Production-grade Classical Forecasting
+
+Unlike notebook-only forecasting projects, this milestone introduces a **modular forecasting framework** inspired by production Machine Learning systems.
+
+## Implemented Models
+
+- Moving Average
+- ARIMA
+- SARIMA
+- Prophet
+
+## Production Features
+
+- Common forecasting interface
+- Base forecasting class
+- Modular forecasting pipeline
+- Automatic train/test split
+- Unified evaluation metrics
+- Automatic visualization
+- Model registry
+- Benchmark runner
+- Experiment tracking
+- Prediction persistence
+- Automatic report generation
+- Reproducible forecasting experiments
+
+## Evaluation Metrics
+
+Every model is evaluated using:
+
+- MAE
+- RMSE
+- MAPE
+- Training Time
+- Prediction Time
+
+## Experiment Tracking
+
+Every forecasting run is automatically stored inside MySQL.
+
+Stored metadata includes:
+
+- Model name
+- Parameters
+- MAE
+- RMSE
+- MAPE
+- Training time
+- Prediction time
+- Timestamp
+
+Prediction values are also persisted for later comparison and dashboard visualization.
 
 ---
 
@@ -302,6 +399,24 @@ Completed analyses:
 
 ---
 
+## ✅ Milestone 3 — Production-grade Classical Forecasting
+
+Completed:
+
+- Moving Average
+- ARIMA
+- SARIMA
+- Prophet
+- Model Benchmarking
+- Forecast Pipeline
+- Model Registry
+- Experiment Tracking
+- Prediction Storage
+- Forecast Reports
+- Automatic Visualization
+
+---
+
 # ⚡ Performance Benchmarks
 
 ## Sell Prices ETL
@@ -328,6 +443,18 @@ Completed analyses:
 
 ---
 
+## Classical Forecasting Benchmark
+
+| Model | MAE | RMSE | MAPE |
+|------|------:|------:|------:|
+| Moving Average | 5255.92 | 6660.73 | 739.72 |
+| ARIMA | 5102.83 | 6626.78 | 732.71 |
+| SARIMA | 5176.85 | 6580.66 | 866.94 |
+| **Prophet** | **4433.22** | **5560.65** | **628.44** |
+
+**Best Performing Model:** **Prophet**
+---
+
 # 🗺 Roadmap
 
 | Status | Milestone |
@@ -347,6 +474,25 @@ Completed analyses:
 
 ---
 
+# 🗺 Roadmap
+
+| Status | Milestone |
+|--------|-----------|
+| ✅ | Milestone 0 — Business Understanding |
+| ✅ | Milestone 1 — Data Engineering & Data Warehouse |
+| ✅ | Milestone 2 — Exploratory Data Analysis |
+| ✅ | Milestone 3 — Production-grade Classical Forecasting |
+| 🚧 | Milestone 4 — Deep Learning Forecasting |
+| ⬜ | Milestone 5 — Transformer Forecasting |
+| ⬜ | Milestone 6 — LLM-powered Forecast Explanations |
+| ⬜ | Milestone 7 — Retrieval-Augmented Generation (RAG) |
+| ⬜ | Milestone 8 — Multi-Agent AI System |
+| ⬜ | Milestone 9 — FastAPI Backend |
+| ⬜ | Milestone 10 — React Dashboard |
+| ⬜ | Milestone 11 — Deployment & MLOps |
+
+---
+
 # 🔒 Configuration
 
 Sensitive configuration files are **not tracked** by Git.
@@ -357,30 +503,36 @@ Create your own configuration file:
 configs/database.yaml
 ```
 
-using:
+using
 
 ```text
 configs/database.example.yaml
 ```
 
+and update it with your MySQL credentials.
+
 ---
 
 # 🚀 Getting Started
 
-## Clone the repository
+## 1. Clone the repository
 
 ```bash
 git clone <repository-url>
 cd AI-demand-intelligence-platform
 ```
 
-## Create a virtual environment
+---
+
+## 2. Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-## Activate
+---
+
+## 3. Activate the environment
 
 ### Windows
 
@@ -388,21 +540,25 @@ python -m venv venv
 venv\Scripts\activate
 ```
 
-### Linux/macOS
+### Linux / macOS
 
 ```bash
 source venv/bin/activate
 ```
 
-## Install dependencies
+---
+
+## 4. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Configure MySQL
+---
 
-Copy:
+## 5. Configure MySQL
+
+Copy
 
 ```text
 configs/database.example.yaml
@@ -416,9 +572,11 @@ configs/database.yaml
 
 and update your credentials.
 
-## Create Database Schema
+---
 
-Execute:
+## 6. Create the database schema
+
+Execute
 
 ```text
 src/database/schema.sql
@@ -426,9 +584,11 @@ src/database/schema.sql
 
 using MySQL Workbench.
 
-## Run ETL
+---
 
-Example:
+## 7. Run ETL Pipelines
+
+Example
 
 ```bash
 python -m tests.test_sales_pipeline
@@ -436,29 +596,175 @@ python -m tests.test_sales_pipeline
 
 ---
 
+## 8. Run Exploratory Data Analysis
+
+Open
+
+```text
+notebooks/02_m2_eda.ipynb
+```
+
+and execute the notebook.
+
+---
+
+## 9. Run Individual Forecasting Models
+
+### Moving Average
+
+```bash
+python -m tests.test_moving_average
+```
+
+### ARIMA
+
+```bash
+python -m tests.test_arima
+```
+
+### SARIMA
+
+```bash
+python -m tests.test_sarima
+```
+
+### Prophet
+
+```bash
+python -m tests.test_prophet
+```
+
+---
+
+## 10. Benchmark All Classical Models
+
+```bash
+python -m tests.benchmark_classical_models
+```
+
+This will automatically:
+
+- Train every forecasting model
+- Evaluate forecasting performance
+- Generate comparison metrics
+- Save experiments into MySQL
+- Store prediction history
+- Produce a benchmarking summary
+
+---
+
+# 📈 Current Forecasting Results
+
+| Model | MAE | RMSE | MAPE | Status |
+|------|------:|------:|------:|--------|
+| Moving Average | 5255.92 | 6660.73 | 739.72 | ✅ |
+| ARIMA | 5102.83 | 6626.78 | 732.71 | ✅ |
+| SARIMA | 5176.85 | 6580.66 | 866.94 | ✅ |
+| Prophet | **4433.22** | **5560.65** | **628.44** | 🏆 Best |
+
+---
+
 # 📌 Current Status
 
-**Current Version:** **v2.0**
+## Current Version
 
-### Completed
+# **v3.0.0**
 
-- Business Understanding
-- Production-grade ETL Framework
+---
+
+## Completed
+
+- ✅ Business Understanding
+- ✅ Production-grade ETL Framework
+- ✅ MySQL Star Schema
+- ✅ Analytics SQL View
+- ✅ Exploratory Data Analysis
+- ✅ Prophet Trend & Seasonality Analysis
+- ✅ Production-grade Classical Forecasting Framework
+- ✅ Forecast Benchmarking
+- ✅ Model Registry
+- ✅ Experiment Tracking
+- ✅ Prediction Storage
+- ✅ Automatic Forecast Reports
+
+---
+
+## Current Focus
+
+🚧 **Milestone 4 — Deep Learning Forecasting**
+
+Upcoming work includes:
+
+- LSTM Forecasting
+- GRU Forecasting
+- Seq2Seq Models
+- Encoder–Decoder Architectures
+- Deep Learning Benchmark Suite
+- Hyperparameter Optimization
+- Model Comparison Dashboard
+
+---
+
+# 🌟 Project Highlights
+
+This project now includes:
+
+### Data Engineering
+
+- Production ETL framework
+- Chunk-based processing
 - MySQL Star Schema
-- Analytics SQL View
-- Exploratory Data Analysis
-- Prophet Seasonality Analysis
+- Configuration-driven pipelines
 
-### Current Focus
+### Analytics
 
-🚧 **Milestone 3 — Classical Time Series Forecasting**
+- Business-oriented EDA
+- SQL analytics layer
+- Prophet decomposition
+- Seasonality analysis
 
-Upcoming models:
+### Forecasting
 
-- Moving Average
-- ARIMA
-- SARIMA
-- Prophet Evaluation
+- Modular forecasting framework
+- Four forecasting algorithms
+- Unified forecasting interface
+- Automatic benchmarking
+- Automatic visualization
+- Automatic evaluation
+
+### Experiment Tracking
+
+- Forecast registry
+- MySQL experiment database
+- Prediction persistence
+- Forecast reports
+- Performance benchmarking
+
+### Software Engineering
+
+- Modular architecture
+- Reusable components
+- Separation of concerns
+- Production-ready project structure
+- Extensible forecasting framework
+
+---
+
+# 🎯 Next Milestone
+
+The next major milestone focuses on **Deep Learning for Time Series Forecasting**, where the project will transition from classical statistical models to neural-network-based forecasting.
+
+Planned implementations include:
+
+- LSTM
+- GRU
+- Seq2Seq
+- Model checkpointing
+- Training history visualization
+- GPU support
+- Early stopping
+- Learning rate scheduling
+- Deep Learning experiment tracking
 
 ---
 
@@ -466,10 +772,22 @@ Upcoming models:
 
 Contributions, suggestions, improvements, and feature requests are welcome.
 
-Feel free to fork the repository and open a pull request.
+If you'd like to contribute:
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push the branch.
+5. Open a Pull Request.
 
 ---
 
 # 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+## ⭐ If you found this project useful, consider giving it a star!
+
+It helps others discover the project and motivates future development.

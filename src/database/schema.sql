@@ -125,3 +125,37 @@ JOIN calendar_dim c
 ON s.d = c.d;
 
 show tables;
+
+CREATE TABLE IF NOT EXISTS forecast_experiments (
+
+    experiment_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    model_name VARCHAR(100),
+
+    parameters JSON,
+
+    mae FLOAT,
+
+    rmse FLOAT,
+
+    mape FLOAT,
+
+    train_time FLOAT,
+
+    predict_time FLOAT,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS forecast_predictions (
+
+    prediction_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    model_name VARCHAR(100),
+
+    forecast_date DATE,
+
+    actual FLOAT,
+
+    prediction FLOAT
+);

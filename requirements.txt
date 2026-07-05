@@ -33,3 +33,7 @@ requests
 mysql-connector-python
 SQLAlchemy
 PyMySQL
+
+statsmodels
+pmdarima
+prophet
