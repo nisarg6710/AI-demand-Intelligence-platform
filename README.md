@@ -1,793 +1,358 @@
 # 📊 AI Demand Intelligence Platform
 
-An end-to-end AI-powered **Demand Forecasting and Business Intelligence Platform** built using modern **Data Engineering, Time Series Forecasting, Machine Learning, Large Language Models (LLMs), Multi-Agent Systems, and MLOps**.
+> **Production-grade AI-powered Demand Forecasting & Business
+> Intelligence Platform**
 
-The project follows a production-grade workflow, beginning with raw retail data and progressing through scalable ETL pipelines, a MySQL data warehouse, business analytics, forecasting, explainable AI, APIs, dashboards, and cloud deployment.
+An end-to-end project demonstrating **Data Engineering**, **Business
+Analytics**, **Classical Time Series Forecasting**, **Deep Learning
+Forecasting**, and the roadmap toward **Transformer Models, LLMs, RAG,
+Multi-Agent Systems, APIs, Dashboards, and MLOps**.
 
----
+------------------------------------------------------------------------
 
 # 🎯 Project Overview
 
-Demand forecasting is one of the most important problems in retail and supply chain management. Poor forecasts lead to:
+Demand forecasting is a critical retail and supply-chain problem. This
+project builds a production-oriented forecasting platform rather than a
+notebook-only solution.
 
-- Overstocking
-- Stockouts
-- Increased inventory costs
-- Inefficient staffing
-- Poor logistics planning
+## Current Capabilities
 
-This project aims to build a complete AI-powered demand intelligence platform capable of:
+-   Production ETL framework
+-   MySQL Star Schema warehouse
+-   Business analytics
+-   Exploratory data analysis
+-   Classical forecasting framework
+-   Deep learning forecasting framework
+-   Experiment tracking
+-   Benchmarking
 
-- Building scalable ETL pipelines
-- Designing a production-grade data warehouse
-- Performing business analytics
-- Forecasting product demand
-- Benchmarking multiple forecasting models
-- Tracking forecasting experiments
-- Storing prediction history
-- Explaining forecasts using LLMs
-- Answering business questions through AI agents
-- Serving predictions through APIs
-- Visualizing insights through an interactive dashboard
+------------------------------------------------------------------------
 
-The emphasis is on **software engineering**, **scalability**, **modularity**, **experiment reproducibility**, and **production-ready architecture** in addition to forecasting accuracy.
-
----
-
-# 🏗 System Architecture
-
-```text
-                     Raw Retail Data
-                            │
-                            ▼
-                  ETL Data Engineering Layer
-                            │
-                            ▼
-                    MySQL Star Schema Warehouse
-                            │
-                            ▼
-                  Analytics Layer (SQL Views)
-                            │
-                            ▼
-              Exploratory Data Analysis (EDA)
-                            │
-                            ▼
-            Production Forecasting Framework
-                            │
-            ┌───────────────┼────────────────┐
-            ▼               ▼                ▼
-     Moving Average      ARIMA          SARIMA
-            │               │                │
-            └───────────────┼────────────────┘
-                            ▼
-                        Prophet
-                            │
-                            ▼
-              Experiment Tracking Database
-                            │
-                            ▼
-             Deep Learning Forecasting (Next)
-                            │
-                            ▼
-          Transformer Forecasting Models
-                            │
-                            ▼
-               LLM + RAG + Multi-Agent AI
-                            │
-                            ▼
-                  FastAPI Backend Services
-                            │
-                            ▼
-                  React Business Dashboard
-```
-
----
-
-# 🛠 Tech Stack
-
-## Programming
-
-- Python 3.12
+# ⭐ Features
 
 ## Data Engineering
 
-- Pandas
-- NumPy
-- MySQL
-- YAML Configuration
-- Chunk-based ETL
+-   Generic ETL framework
+-   Chunk-based processing
+-   Configuration-driven pipelines
+-   MySQL data warehouse
 
-## Data Visualization
+## Analytics
 
-- Matplotlib
-- Seaborn
+-   SQL analytics layer
+-   Business-oriented EDA
+-   Prophet decomposition
 
-## Time Series Forecasting
+## Classical Forecasting
 
-- Statsmodels
-- pmdarima
-- Prophet
+-   Moving Average
+-   ARIMA
+-   SARIMA
+-   Prophet
+-   Unified forecasting pipeline
+-   Benchmarking
+-   Experiment tracking
 
-## Machine Learning *(Upcoming)*
+## Deep Learning
 
-- Scikit-Learn
-- XGBoost
-- LightGBM
+-   LSTM
+-   GRU
+-   Seq2Seq
+-   GPU Training (CUDA)
+-   Early Stopping
+-   Model Checkpointing
+-   Generic Trainer
+-   Generic Evaluator
 
-## Deep Learning *(Upcoming)*
+------------------------------------------------------------------------
 
-- PyTorch
+# 🏗 System Architecture
 
-## LLM & AI *(Upcoming)*
+``` text
+Raw Retail Data
+      │
+      ▼
+ETL Pipeline
+      │
+      ▼
+MySQL Star Schema
+      │
+      ▼
+Analytics & EDA
+      │
+      ▼
+Classical Forecasting
+(MA • ARIMA • SARIMA • Prophet)
+      │
+      ▼
+Deep Learning
+(LSTM • GRU • Seq2Seq)
+      │
+      ▼
+Transformer Models (Upcoming)
+      │
+      ▼
+LLM + RAG + Multi-Agent AI
+      │
+      ▼
+FastAPI
+      │
+      ▼
+React Dashboard
+```
 
-- LangChain
-- FAISS
-- OpenAI / Open Source LLMs
+------------------------------------------------------------------------
 
-## Backend *(Upcoming)*
+# 🛠 Tech Stack
 
-- FastAPI
+-   Python 3.12
+-   Pandas
+-   NumPy
+-   MySQL
+-   Statsmodels
+-   pmdarima
+-   Prophet
+-   PyTorch
+-   Matplotlib
+-   Seaborn
 
-## Frontend *(Upcoming)*
+Upcoming: - XGBoost - LightGBM - LangChain - FAISS - FastAPI - React -
+Docker - GitHub Actions
 
-- React
-- Tailwind CSS
-
-## Deployment *(Upcoming)*
-
-- Docker
-- Docker Compose
-- GitHub Actions
-
----
+------------------------------------------------------------------------
 
 # 📂 Project Structure
 
-```text
-AI-demand-intelligence-platform/
-│
-├── artifacts/
-├── configs/
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── external/
-│
-├── deployment/
-│
-├── docs/
-│   ├── business_case/
-│   ├── milestone_01_etl/
-│   ├── milestone_02_eda/
-│   └── milestone_03_forecasting/
-│
-├── logs/
-├── notebooks/
-│
-├── src/
-│   ├── analytics/
-│   ├── api/
-│   ├── config/
-│   ├── database/
-│   ├── etl/
-│   ├── forecasting/
-│   │   ├── base_model.py
-│   │   ├── moving_average.py
-│   │   ├── arima.py
-│   │   ├── sarima.py
-│   │   ├── prophet_model.py
-│   │   ├── metrics.py
-│   │   ├── registry.py
-│   │   ├── pipeline.py
-│   │   ├── report.py
-│   │   ├── experiment.py
-│   │   └── visualization.py
-│   │
-│   ├── observability/
-│   ├── pipelines/
-│   ├── transforms/
-│   └── utils/
-│
-├── tests/
-│
-├── requirements.txt
-└── README.md
+``` text
+docs/
+├── business_case/
+├── milestone_01_etl/
+├── milestone_02_eda/
+├── milestone_03_forecasting/
+└── milestone_04_deep_learning/
+
+src/
+├── analytics/
+├── database/
+├── etl/
+├── forecasting/
+│   ├── classical/
+│   └── deep_learning/
+└── utils/
+
+artifacts/
+├── models/
+├── benchmarks/
+└── plots/
 ```
 
----
+------------------------------------------------------------------------
 
 # 📦 Dataset
 
-This project uses the **M5 Forecasting – Accuracy** dataset.
+**M5 Forecasting -- Accuracy**
 
-Datasets used:
+Datasets: - Calendar - Sell Prices - Sales History
 
-- Calendar
-- Sell Prices
-- Sales History
-
-Future versions may integrate:
-
-- Weather Data
-- Promotion Data
-- External Economic Indicators
-
----
+------------------------------------------------------------------------
 
 # ⚙ ETL Pipeline
 
-The ETL framework follows a modular and reusable architecture.
+Extraction → Validation → Transformation → Loading → MySQL Warehouse
 
-```text
-Raw CSV
-    │
-    ▼
-Extraction
-    │
-    ▼
-Validation
-    │
-    ▼
-Transformation
-    │
-    ▼
-Loading
-    │
-    ▼
-MySQL Data Warehouse
-```
+Features: - Generic CSV extractor - Validation - Chunk processing -
+Batch loading - Execution metrics
 
-### Current ETL Features
-
-- Generic CSV extractor
-- Configuration-driven pipelines
-- Generic transformer interface
-- Data validation
-- Batch loading using `executemany()`
-- Chunk-based processing
-- Execution metrics
-- Reusable pipeline architecture
-
----
+------------------------------------------------------------------------
 
 # 🗄 Data Warehouse
 
-The project uses a **Star Schema** optimized for analytical workloads.
-
 ## Dimension Tables
 
-- `calendar_dim`
-- `item_dim`
-- `store_dim`
+-   calendar_dim
+-   item_dim
+-   store_dim
 
 ## Fact Tables
 
-- `sales_fact`
-- `price_fact`
+-   sales_fact
+-   price_fact
 
-## Analytics Views
+## Analytics
 
-- `sales_enriched`
+-   sales_enriched
 
-## Forecasting Tables
+## Forecasting
 
-- `forecast_experiments`
-- `forecast_predictions`
+-   forecast_experiments
+-   forecast_predictions
 
----
+------------------------------------------------------------------------
 
 # 📊 Exploratory Data Analysis
 
-Business-oriented exploratory analysis has been performed directly on the MySQL warehouse.
+Completed:
 
-Completed analyses include:
+-   Daily demand trends
+-   Weekly & monthly seasonality
+-   YoY growth
+-   Holiday impact
+-   SNAP impact
+-   Store, department and category analysis
+-   Prophet trend & seasonality decomposition
 
-- Daily demand trend
-- Weekly seasonality
-- Monthly seasonality
-- Year-over-year growth
-- Holiday impact
-- SNAP impact
-- Store performance
-- Category performance
-- Department performance
-- Top-selling products
-- Prophet trend decomposition
-- Prophet seasonality decomposition
+------------------------------------------------------------------------
 
----
+# 📈 Forecasting Framework
 
-# 📈 Milestone 3 — Production-grade Classical Forecasting
+## Classical Models
 
-Unlike notebook-only forecasting projects, this milestone introduces a **modular forecasting framework** inspired by production Machine Learning systems.
+-   Moving Average
+-   ARIMA
+-   SARIMA
+-   Prophet
 
-## Implemented Models
+Framework Features:
 
-- Moving Average
-- ARIMA
-- SARIMA
-- Prophet
+-   Common interface
+-   Automatic evaluation
+-   Benchmark runner
+-   Visualization
+-   Model registry
+-   Experiment tracking
 
-## Production Features
+## Deep Learning Models
 
-- Common forecasting interface
-- Base forecasting class
-- Modular forecasting pipeline
-- Automatic train/test split
-- Unified evaluation metrics
-- Automatic visualization
-- Model registry
-- Benchmark runner
-- Experiment tracking
-- Prediction persistence
-- Automatic report generation
-- Reproducible forecasting experiments
+-   LSTM
+-   GRU
+-   Seq2Seq
 
-## Evaluation Metrics
+Framework Features:
 
-Every model is evaluated using:
+-   Sliding-window dataset
+-   CUDA support
+-   Early stopping
+-   Checkpointing
+-   Generic trainer
+-   Generic evaluator
+-   Deep learning benchmark
 
-- MAE
-- RMSE
-- MAPE
-- Training Time
-- Prediction Time
+------------------------------------------------------------------------
 
-## Experiment Tracking
+# 🏆 Benchmark Results
 
-Every forecasting run is automatically stored inside MySQL.
+## Classical Models
 
-Stored metadata includes:
+  Model                      MAE          RMSE         MAPE
+  ---------------- ------------- ------------- ------------
+  Moving Average         5255.92       6660.73       739.72
+  ARIMA                  5102.83       6626.78       732.71
+  SARIMA                 5176.85       6580.66       866.94
+  **Prophet**        **4433.22**   **5560.65**   **628.44**
 
-- Model name
-- Parameters
-- MAE
-- RMSE
-- MAPE
-- Training time
-- Prediction time
-- Timestamp
+## Deep Learning Models
 
-Prediction values are also persisted for later comparison and dashboard visualization.
+  Model                   MAE          RMSE          MAPE
+  ------------- ------------- ------------- -------------
+  LSTM                5387.24       7125.91       1067.01
+  GRU                 5550.31       7757.56       1011.50
+  **Seq2Seq**     **5331.46**   **7111.10**   **1064.29**
 
----
+------------------------------------------------------------------------
 
 # 🚀 Completed Milestones
 
-## ✅ Milestone 0 — Business Understanding
+-   ✅ Milestone 0 --- Business Understanding
+-   ✅ Milestone 1 --- ETL & Data Warehouse
+-   ✅ Milestone 2 --- Exploratory Data Analysis
+-   ✅ Milestone 3 --- Production-grade Classical Forecasting
+-   ✅ Milestone 4 --- Deep Learning Forecasting
 
-- Business problem definition
-- Project objectives
-- Business value analysis
-- Project planning
-
----
-
-## ✅ Milestone 1 — Data Engineering & Data Warehouse
-
-- Generic ETL framework
-- Configuration-driven pipelines
-- MySQL Star Schema
-- Calendar ETL
-- Store Dimension ETL
-- Item Dimension ETL
-- Sell Price ETL
-- Sales Fact ETL
-- Chunk-based processing
-- Execution metrics
-- Analytics SQL View (`sales_enriched`)
-
----
-
-## ✅ Milestone 2 — Exploratory Data Analysis
-
-Completed analyses:
-
-- Demand trend analysis
-- Weekly seasonality
-- Monthly seasonality
-- Year-over-year growth
-- Holiday analysis
-- SNAP analysis
-- Store performance
-- Category analysis
-- Department analysis
-- Product analysis
-- Prophet decomposition
-- Business insights
-
----
-
-## ✅ Milestone 3 — Production-grade Classical Forecasting
-
-Completed:
-
-- Moving Average
-- ARIMA
-- SARIMA
-- Prophet
-- Model Benchmarking
-- Forecast Pipeline
-- Model Registry
-- Experiment Tracking
-- Prediction Storage
-- Forecast Reports
-- Automatic Visualization
-
----
-
-# ⚡ Performance Benchmarks
-
-## Sell Prices ETL
-
-| Metric | Value |
-|---------|------:|
-| Rows Processed | **6,841,121** |
-| Chunk Processing | ✅ |
-| Batch Loading | `executemany()` |
-| Execution Time | ~10 minutes |
-| Throughput | ~11,300 rows/sec |
-
----
-
-## Sales History ETL
-
-| Metric | Value |
-|---------|------:|
-| Rows Processed | **58,326,370** |
-| Chunk Processing | ✅ |
-| Chunk Size | 50,000 |
-| Execution Metrics | ✅ |
-| Warehouse Loaded | ✅ |
-
----
-
-## Classical Forecasting Benchmark
-
-| Model | MAE | RMSE | MAPE |
-|------|------:|------:|------:|
-| Moving Average | 5255.92 | 6660.73 | 739.72 |
-| ARIMA | 5102.83 | 6626.78 | 732.71 |
-| SARIMA | 5176.85 | 6580.66 | 866.94 |
-| **Prophet** | **4433.22** | **5560.65** | **628.44** |
-
-**Best Performing Model:** **Prophet**
----
+------------------------------------------------------------------------
 
 # 🗺 Roadmap
 
-| Status | Milestone |
-|--------|-----------|
-| ✅ | Milestone 0 — Business Understanding |
-| ✅ | Milestone 1 — Data Engineering |
-| ✅ | Milestone 2 — Exploratory Data Analysis |
-| 🚧 | Milestone 3 — Classical Forecasting |
-| ⬜ | Milestone 4 — Deep Learning Forecasting |
-| ⬜ | Milestone 5 — Transformer Forecasting |
-| ⬜ | Milestone 6 — LLM Forecast Explanations |
-| ⬜ | Milestone 7 — Retrieval-Augmented Generation |
-| ⬜ | Milestone 8 — Multi-Agent AI System |
-| ⬜ | Milestone 9 — FastAPI Backend |
-| ⬜ | Milestone 10 — React Frontend |
-| ⬜ | Milestone 11 — Deployment & MLOps |
+  Status   Milestone
+  -------- ---------------------------
+  ✅       Business Understanding
+  ✅       ETL & Data Warehouse
+  ✅       Exploratory Data Analysis
+  ✅       Classical Forecasting
+  ✅       Deep Learning Forecasting
+  🚧       Transformer Forecasting
+  ⬜       LLM Forecast Explanations
+  ⬜       RAG
+  ⬜       Multi-Agent AI
+  ⬜       FastAPI
+  ⬜       React Dashboard
+  ⬜       Deployment & MLOps
 
----
-
-# 🗺 Roadmap
-
-| Status | Milestone |
-|--------|-----------|
-| ✅ | Milestone 0 — Business Understanding |
-| ✅ | Milestone 1 — Data Engineering & Data Warehouse |
-| ✅ | Milestone 2 — Exploratory Data Analysis |
-| ✅ | Milestone 3 — Production-grade Classical Forecasting |
-| 🚧 | Milestone 4 — Deep Learning Forecasting |
-| ⬜ | Milestone 5 — Transformer Forecasting |
-| ⬜ | Milestone 6 — LLM-powered Forecast Explanations |
-| ⬜ | Milestone 7 — Retrieval-Augmented Generation (RAG) |
-| ⬜ | Milestone 8 — Multi-Agent AI System |
-| ⬜ | Milestone 9 — FastAPI Backend |
-| ⬜ | Milestone 10 — React Dashboard |
-| ⬜ | Milestone 11 — Deployment & MLOps |
-
----
-
-# 🔒 Configuration
-
-Sensitive configuration files are **not tracked** by Git.
-
-Create your own configuration file:
-
-```text
-configs/database.yaml
-```
-
-using
-
-```text
-configs/database.example.yaml
-```
-
-and update it with your MySQL credentials.
-
----
+------------------------------------------------------------------------
 
 # 🚀 Getting Started
 
-## 1. Clone the repository
-
-```bash
+``` bash
 git clone <repository-url>
 cd AI-demand-intelligence-platform
-```
 
----
-
-## 2. Create a virtual environment
-
-```bash
 python -m venv venv
-```
 
----
-
-## 3. Activate the environment
-
-### Windows
-
-```bash
+# Windows
 venv\Scripts\activate
-```
 
-### Linux / macOS
-
-```bash
-source venv/bin/activate
-```
-
----
-
-## 4. Install dependencies
-
-```bash
 pip install -r requirements.txt
 ```
 
----
+Configure `configs/database.yaml`, create the schema from
+`src/database/schema.sql`, then run:
 
-## 5. Configure MySQL
-
-Copy
-
-```text
-configs/database.example.yaml
-```
-
-to
-
-```text
-configs/database.yaml
-```
-
-and update your credentials.
-
----
-
-## 6. Create the database schema
-
-Execute
-
-```text
-src/database/schema.sql
-```
-
-using MySQL Workbench.
-
----
-
-## 7. Run ETL Pipelines
-
-Example
-
-```bash
+``` bash
 python -m tests.test_sales_pipeline
-```
-
----
-
-## 8. Run Exploratory Data Analysis
-
-Open
-
-```text
-notebooks/02_m2_eda.ipynb
-```
-
-and execute the notebook.
-
----
-
-## 9. Run Individual Forecasting Models
-
-### Moving Average
-
-```bash
-python -m tests.test_moving_average
-```
-
-### ARIMA
-
-```bash
-python -m tests.test_arima
-```
-
-### SARIMA
-
-```bash
-python -m tests.test_sarima
-```
-
-### Prophet
-
-```bash
-python -m tests.test_prophet
-```
-
----
-
-## 10. Benchmark All Classical Models
-
-```bash
 python -m tests.benchmark_classical_models
+python -m tests.benchmark_deep_learning
 ```
 
-This will automatically:
-
-- Train every forecasting model
-- Evaluate forecasting performance
-- Generate comparison metrics
-- Save experiments into MySQL
-- Store prediction history
-- Produce a benchmarking summary
-
----
-
-# 📈 Current Forecasting Results
-
-| Model | MAE | RMSE | MAPE | Status |
-|------|------:|------:|------:|--------|
-| Moving Average | 5255.92 | 6660.73 | 739.72 | ✅ |
-| ARIMA | 5102.83 | 6626.78 | 732.71 | ✅ |
-| SARIMA | 5176.85 | 6580.66 | 866.94 | ✅ |
-| Prophet | **4433.22** | **5560.65** | **628.44** | 🏆 Best |
-
----
+------------------------------------------------------------------------
 
 # 📌 Current Status
 
-## Current Version
+**Version:** **v4.0.0**
 
-# **v3.0.0**
+Completed:
 
----
+-   ETL Framework
+-   MySQL Star Schema
+-   EDA
+-   Classical Forecasting
+-   Deep Learning Forecasting
+-   Benchmarking
+-   Experiment Tracking
 
-## Completed
+**Current Focus:** 🚧 Milestone 5 --- Transformer Forecasting
 
-- ✅ Business Understanding
-- ✅ Production-grade ETL Framework
-- ✅ MySQL Star Schema
-- ✅ Analytics SQL View
-- ✅ Exploratory Data Analysis
-- ✅ Prophet Trend & Seasonality Analysis
-- ✅ Production-grade Classical Forecasting Framework
-- ✅ Forecast Benchmarking
-- ✅ Model Registry
-- ✅ Experiment Tracking
-- ✅ Prediction Storage
-- ✅ Automatic Forecast Reports
+Planned: - PatchTST - Informer - Temporal Fusion Transformer (TFT)
 
----
-
-## Current Focus
-
-🚧 **Milestone 4 — Deep Learning Forecasting**
-
-Upcoming work includes:
-
-- LSTM Forecasting
-- GRU Forecasting
-- Seq2Seq Models
-- Encoder–Decoder Architectures
-- Deep Learning Benchmark Suite
-- Hyperparameter Optimization
-- Model Comparison Dashboard
-
----
+------------------------------------------------------------------------
 
 # 🌟 Project Highlights
 
-This project now includes:
+-   Production-ready architecture
+-   58M+ row retail warehouse
+-   Reusable forecasting framework
+-   Multiple benchmarked forecasting models
+-   Modular deep learning pipeline
+-   Strong software engineering practices
 
-### Data Engineering
-
-- Production ETL framework
-- Chunk-based processing
-- MySQL Star Schema
-- Configuration-driven pipelines
-
-### Analytics
-
-- Business-oriented EDA
-- SQL analytics layer
-- Prophet decomposition
-- Seasonality analysis
-
-### Forecasting
-
-- Modular forecasting framework
-- Four forecasting algorithms
-- Unified forecasting interface
-- Automatic benchmarking
-- Automatic visualization
-- Automatic evaluation
-
-### Experiment Tracking
-
-- Forecast registry
-- MySQL experiment database
-- Prediction persistence
-- Forecast reports
-- Performance benchmarking
-
-### Software Engineering
-
-- Modular architecture
-- Reusable components
-- Separation of concerns
-- Production-ready project structure
-- Extensible forecasting framework
-
----
-
-# 🎯 Next Milestone
-
-The next major milestone focuses on **Deep Learning for Time Series Forecasting**, where the project will transition from classical statistical models to neural-network-based forecasting.
-
-Planned implementations include:
-
-- LSTM
-- GRU
-- Seq2Seq
-- Model checkpointing
-- Training history visualization
-- GPU support
-- Early stopping
-- Learning rate scheduling
-- Deep Learning experiment tracking
-
----
+------------------------------------------------------------------------
 
 # 🤝 Contributing
 
-Contributions, suggestions, improvements, and feature requests are welcome.
+Contributions, suggestions, improvements, and feature requests are
+welcome.
 
-If you'd like to contribute:
-
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push the branch.
-5. Open a Pull Request.
-
----
+------------------------------------------------------------------------
 
 # 📄 License
 
-This project is licensed under the MIT License.
-
----
-
-## ⭐ If you found this project useful, consider giving it a star!
-
-It helps others discover the project and motivates future development.
+MIT License
