@@ -1,0 +1,27 @@
+
+Forecast Metadata
+
+Trend
+------
+Direction: Increasing
+Growth: 9.12%
+
+Seasonality
+-----------
+Weekly Seasonality: False
+Strength: None
+
+Statistics
+----------
+Average Demand: 136.4
+Minimum Demand: 130.0
+Maximum Demand: 145.0
+Volatility (Std Dev): 5.46
+
+Explain:
+
+1. Why demand is changing.
+2. What the trend indicates.
+3. Whether seasonality is important.
+4. What inventory strategy should be adopted.
+5. Summarize the forecast in plain business language.

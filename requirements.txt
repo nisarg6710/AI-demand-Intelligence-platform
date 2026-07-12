@@ -37,3 +37,6 @@ PyMySQL
 statsmodels
 pmdarima
 prophet
+
+google-genai
+markdown

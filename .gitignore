@@ -32,6 +32,7 @@ logs/
 # Local Configurations
 # ----------------------------
 configs/database.yaml
+configs/llm.yaml
 
 # ----------------------------
 # Datasets

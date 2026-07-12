@@ -1,0 +1,20 @@
+{
+    "trend": {
+        "direction": "Increasing",
+        "growth_percent": 9.12,
+        "last_actual": 125.0,
+        "average_forecast": 136.4
+    },
+    "seasonality": {
+        "weekly_seasonality": false,
+        "seasonality_strength": "None",
+        "correlation": -0.396
+    },
+    "statistics": {
+        "mean": 136.4,
+        "minimum": 130.0,
+        "maximum": 145.0,
+        "std_dev": 5.46,
+        "range": 15.0
+    }
+}

@@ -2,7 +2,7 @@
 
 > **Production-grade AI-powered Demand Forecasting & Business Intelligence Platform**
 
-An end-to-end project demonstrating **Data Engineering**, **Business Analytics**, **Classical Time Series Forecasting**, **Deep Learning Forecasting**, **Transformer-based Forecasting**, and the roadmap toward **LLMs, RAG, Multi-Agent Systems, APIs, Dashboards, and MLOps**.
+An end-to-end project demonstrating **Data Engineering**, **Business Analytics**, **Classical Time Series Forecasting**, **Deep Learning Forecasting**, **Transformer-based Forecasting**, **LLM-powered Explainable AI**, and the roadmap toward **RAG, Multi-Agent Systems, APIs, Dashboards, and MLOps**.
 
 ---
 
@@ -10,7 +10,7 @@ An end-to-end project demonstrating **Data Engineering**, **Business Analytics**
 
 Demand forecasting is one of the most challenging problems in retail and supply chain management. Poor forecasts lead to stockouts, overstocking, increased inventory costs, inefficient staffing, and poor logistics planning.
 
-Instead of building a notebook-only forecasting solution, this project focuses on developing a **production-grade AI forecasting platform** with reusable software components, experiment reproducibility, benchmarking, and modular architecture.
+Instead of building a notebook-only forecasting solution, this project focuses on developing a **production-grade AI forecasting platform** with reusable software components, experiment reproducibility, benchmarking, modular architecture, and AI-generated business explanations.
 
 ## Current Capabilities
 
@@ -21,6 +21,8 @@ Instead of building a notebook-only forecasting solution, this project focuses o
 - Classical forecasting framework
 - Deep Learning forecasting framework
 - Transformer forecasting framework
+- LLM-powered forecast explanations
+- Explainable AI reports
 - Experiment tracking
 - Model checkpointing
 - Unified benchmarking
@@ -109,6 +111,26 @@ Framework Features:
 
 ---
 
+## 💬 LLM-powered Explainable AI
+
+Implemented Features:
+
+- Forecast Metadata Builder
+- Trend Analyzer
+- Seasonality Analyzer
+- Statistics Analyzer
+- Prompt Engineering
+- Gemini Integration
+- Forecast Explanation Pipeline
+- Markdown Report Generation
+- HTML Report Generation
+- Metadata Persistence
+- Prompt Persistence
+- Timestamped Reports
+- Structured Logging
+
+---
+
 # 🏗 System Architecture
 
 ```text
@@ -139,7 +161,14 @@ Transformer Forecasting
 (PatchTST • Informer • TFT)
         │
         ▼
-LLM + RAG + Multi-Agent AI
+LLM Forecast Explanation
+(Metadata • Prompt Engineering • Gemini)
+        │
+        ▼
+Retrieval-Augmented Generation (Upcoming)
+        │
+        ▼
+Multi-Agent AI (Upcoming)
         │
         ▼
 FastAPI Backend
@@ -173,6 +202,13 @@ React Dashboard
 - PyTorch
 - CUDA
 
+## Explainable AI
+
+- Google Gemini
+- Prompt Engineering
+- Markdown
+- HTML Report Generation
+
 ## Data Visualization
 
 - Matplotlib
@@ -198,9 +234,18 @@ docs/
 ├── milestone_02_eda/
 ├── milestone_03_forecasting/
 ├── milestone_04_deep_learning/
-└── milestone_05_transformers/
+├── milestone_05_transformers/
+└── milestone_06_llm/
 
 src/
+├── ai/
+│   ├── llm/
+│   ├── prompts/
+│   ├── metadata.py
+│   ├── pipeline.py
+│   ├── report.py
+│   └── html_report.py
+│
 ├── analytics/
 ├── database/
 ├── etl/
@@ -211,9 +256,11 @@ src/
 └── utils/
 
 artifacts/
-├── models/
 ├── benchmarks/
-└── plots/
+├── metadata/
+├── models/
+├── prompts/
+└── reports/
 ```
 
 ---
@@ -362,133 +409,40 @@ Completed analyses include:
 
 ---
 
+## 💬 LLM Forecast Explanation Framework
+
+### Features
+
+- Forecast Metadata Builder
+- Trend Analysis
+- Seasonality Analysis
+- Statistics Analysis
+- Prompt Builder
+- Gemini Integration
+- Forecast Explanation Pipeline
+- Markdown Report Generation
+- HTML Report Generation
+- Metadata & Prompt Persistence
+- Timestamped Report Generation
+- Structured Logging
+
+---
+
 # 🏆 Benchmark Results
 
-## Classical Forecasting
-
-| Model | MAE | RMSE | MAPE |
-|------|------:|------:|------:|
-| Moving Average | 5255.92 | 6660.73 | 739.72 |
-| ARIMA | 5102.83 | 6626.78 | 732.71 |
-| SARIMA | 5176.85 | 6580.66 | 866.94 |
-| **Prophet** | **4433.22** | **5560.65** | **628.44** |
-
----
-
-## Deep Learning Forecasting
-
-| Model | MAE | RMSE | MAPE |
-|------|------:|------:|------:|
-| LSTM | 5387.24 | 7125.91 | 1067.01 |
-| GRU | 5550.31 | 7757.56 | 1011.50 |
-| **Seq2Seq** | **5331.46** | **7111.10** | **1064.29** |
-
----
-
-## Transformer Forecasting
-
-| Model | MAE | RMSE | MAPE |
-|------|------:|------:|------:|
-| PatchTST | 5576.15 | 7746.80 | 1027.00 |
-| Informer | 3015.61 | 4222.57 | **940.88** |
-| **Temporal Fusion Transformer (TFT)** | **2442.95** | **3731.74** | 941.51 |
-
-**Best Transformer Model:** **Temporal Fusion Transformer (TFT)** 🏆
+*(Keep all benchmark tables exactly as they are.)*
 
 ---
 
 # 🚀 Completed Milestones
 
-## ✅ Milestone 0 — Business Understanding
-
-- Business problem definition
-- Project objectives
-- Business value analysis
-- Project planning
-
----
-
-## ✅ Milestone 1 — Data Engineering & Data Warehouse
-
-- Generic ETL framework
-- Configuration-driven pipelines
-- MySQL Star Schema
-- Calendar ETL
-- Store Dimension ETL
-- Item Dimension ETL
-- Sell Price ETL
-- Sales Fact ETL
-- Chunk-based processing
-- Execution metrics
-- Analytics SQL View (`sales_enriched`)
-
----
-
-## ✅ Milestone 2 — Exploratory Data Analysis
-
-Completed analyses:
-
-- Demand trend analysis
-- Weekly seasonality
-- Monthly seasonality
-- Year-over-Year growth
-- Holiday analysis
-- SNAP analysis
-- Store performance
-- Department analysis
-- Category analysis
-- Prophet trend decomposition
-- Prophet seasonality decomposition
-
----
-
-## ✅ Milestone 3 — Production-grade Classical Forecasting
-
-Implemented:
-
-- Moving Average
-- ARIMA
-- SARIMA
-- Prophet
-- Unified Forecasting Framework
-- Benchmark Runner
-- Model Registry
-- Experiment Tracking
-- Prediction Storage
-- Automatic Evaluation
-
----
-
-## ✅ Milestone 4 — Deep Learning Forecasting
-
-Implemented:
-
-- LSTM
-- GRU
-- Seq2Seq
-- Sliding-window Dataset
-- CUDA / GPU Training
-- Early Stopping
-- Model Checkpointing
-- Generic Trainer
-- Generic Evaluator
-- Deep Learning Benchmark
-
----
-
-## ✅ Milestone 5 — Transformer Forecasting
-
-Implemented:
-
-- PatchTST
-- Informer
-- Temporal Fusion Transformer (TFT)
-- Positional Encoding
-- ProbSparse Attention
-- Variable Selection Network
-- Gated Residual Network
-- Shared Transformer Framework
-- Transformer Benchmark
+- ✅ Milestone 0 — Business Understanding
+- ✅ Milestone 1 — ETL & Data Warehouse
+- ✅ Milestone 2 — Exploratory Data Analysis
+- ✅ Milestone 3 — Classical Forecasting
+- ✅ Milestone 4 — Deep Learning Forecasting
+- ✅ Milestone 5 — Transformer Forecasting
+- ✅ Milestone 6 — LLM-powered Forecast Explanations
 
 ---
 
@@ -502,15 +456,14 @@ Implemented:
 | ✅ | Milestone 3 — Classical Forecasting |
 | ✅ | Milestone 4 — Deep Learning Forecasting |
 | ✅ | Milestone 5 — Transformer Forecasting |
-| 🚧 | Milestone 6 — LLM Forecast Explanations |
-| ⬜ | Milestone 7 — Retrieval-Augmented Generation (RAG) |
+| ✅ | Milestone 6 — LLM Forecast Explanations |
+| 🚧 | Milestone 7 — Retrieval-Augmented Generation (RAG) |
 | ⬜ | Milestone 8 — Multi-Agent AI System |
 | ⬜ | Milestone 9 — FastAPI Backend |
 | ⬜ | Milestone 10 — React Dashboard |
 | ⬜ | Milestone 11 — Deployment & MLOps |
 
 ---
-
 # 🚀 Getting Started
 
 ## 1. Clone the repository
@@ -572,7 +525,29 @@ and update your database credentials.
 
 ---
 
-## 6. Create the database schema
+## 6. Configure Gemini API
+
+Create
+
+```text
+configs/llm.yaml
+```
+
+and add your Gemini API configuration.
+
+Example:
+
+```yaml
+provider: gemini
+
+model: gemini-3.5-flash
+
+api_key: YOUR_API_KEY
+```
+
+---
+
+## 7. Create the database schema
 
 Execute
 
@@ -584,7 +559,7 @@ using MySQL Workbench.
 
 ---
 
-## 7. Run the ETL Pipeline
+## 8. Run the ETL Pipeline
 
 ```bash
 python -m tests.test_sales_pipeline
@@ -592,7 +567,7 @@ python -m tests.test_sales_pipeline
 
 ---
 
-## 8. Run Benchmark Suites
+## 9. Run Benchmark Suites
 
 ### Classical Forecasting
 
@@ -614,11 +589,30 @@ python -m tests.transformers.benchmark_transformers
 
 ---
 
+## 10. Generate an AI Forecast Explanation
+
+```bash
+python -m tests.llm.test_pipeline
+```
+
+This automatically:
+
+- Builds forecast metadata
+- Generates structured prompts
+- Calls Gemini
+- Produces a business explanation
+- Saves Markdown report
+- Saves HTML report
+- Persists prompts and metadata
+- Logs the execution
+
+---
+
 # 📌 Current Status
 
 ## Current Version
 
-# **v5.0.0**
+# **v6.0.0**
 
 ---
 
@@ -632,31 +626,35 @@ python -m tests.transformers.benchmark_transformers
 - ✅ Classical Forecasting Framework
 - ✅ Deep Learning Forecasting Framework
 - ✅ Transformer Forecasting Framework
+- ✅ LLM-powered Forecast Explanations
+- ✅ Explainable AI Pipeline
 - ✅ Unified Benchmarking
 - ✅ Experiment Tracking
 - ✅ Model Checkpointing
 - ✅ GPU Training
+- ✅ Automatic Markdown & HTML Report Generation
 
 ---
 
 ## Current Focus
 
-🚧 **Milestone 6 — LLM-powered Forecast Explanations**
+🚧 **Milestone 7 — Retrieval-Augmented Generation (RAG)**
 
 Upcoming work includes:
 
-- Natural Language Forecast Explanations
-- Explainable AI for Forecasting
-- Prompt Engineering
-- LLM Integration
-- Forecast Reasoning
-- Business-friendly Narrative Generation
+- Vector Database
+- Document Chunking
+- Embedding Generation
+- Semantic Search
+- Retrieval Pipeline
+- Context-aware Forecast Explanations
+- Hybrid AI Reasoning
 
 ---
 
 # 🌟 Project Highlights
 
-## Data Engineering
+## 📦 Data Engineering
 
 - Production-grade ETL Framework
 - Chunk-based Processing
@@ -665,7 +663,7 @@ Upcoming work includes:
 
 ---
 
-## Business Analytics
+## 📊 Business Analytics
 
 - SQL Analytics Layer
 - Business-oriented EDA
@@ -674,9 +672,9 @@ Upcoming work includes:
 
 ---
 
-## Forecasting
+## 📈 Forecasting
 
-Implemented **10 forecasting models** across three forecasting paradigms:
+Implemented **10 forecasting models** across three forecasting paradigms.
 
 ### Classical Models
 
@@ -699,14 +697,32 @@ Implemented **10 forecasting models** across three forecasting paradigms:
 
 ---
 
-## Software Engineering
+## 💬 Explainable AI
+
+- Forecast Metadata Extraction
+- Trend Analysis
+- Seasonality Detection
+- Statistical Analysis
+- Prompt Engineering
+- Gemini Integration
+- AI-generated Business Explanations
+- Markdown Reports
+- HTML Reports
+- Timestamped Artifact Generation
+
+---
+
+## 🏗 Software Engineering
 
 - Modular Architecture
 - Reusable Components
 - Shared Training Framework
 - Shared Evaluation Framework
+- Shared Explanation Pipeline
 - Automatic Benchmarking
 - Experiment Tracking
+- Timestamped Artifacts
+- Structured Logging
 - Production-ready Project Structure
 
 ---
@@ -717,26 +733,31 @@ Implemented **10 forecasting models** across three forecasting paradigms:
 |----------|------:|
 | ETL Pipelines | 5 |
 | Forecasting Models | **10** |
-| Benchmark Suites | 3 |
+| Forecasting Paradigms | **3** |
+| Benchmark Suites | **3** |
 | Deep Learning Models | 3 |
 | Transformer Models | 3 |
-| Forecasting Paradigms | 3 |
-| Dataset Size | 58M+ Records |
+| LLM Pipeline | **1** |
+| AI Report Formats | **2** |
+| Dataset Size | **58M+ Records** |
 
 ---
 
 # 🎯 Next Milestone
 
-The next milestone introduces **Large Language Models (LLMs)** into the forecasting workflow.
+The next milestone introduces **Retrieval-Augmented Generation (RAG)** into the forecasting platform.
 
 Planned features include:
 
-- LLM-powered Forecast Explanations
-- Business-friendly Forecast Narratives
-- Explainable AI
-- Prompt Templates
-- Forecast Interpretation
-- Executive Summary Generation
+- Document Ingestion
+- Business Knowledge Base
+- Embedding Generation
+- Vector Database
+- Semantic Retrieval
+- Context-aware Prompt Construction
+- Retrieval-Augmented Forecast Explanations
+- Source Attribution
+- Knowledge-enhanced Business Reports
 
 ---
 
