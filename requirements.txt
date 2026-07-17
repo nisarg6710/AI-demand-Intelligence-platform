@@ -40,3 +40,7 @@ prophet
 
 google-genai
 markdown
+
+sentence-transformers
+
+faiss-cpu
