@@ -1,0 +1,250 @@
+{
+    "calendar_dim": [
+        {
+            "column": "d",
+            "type": "varchar(10)"
+        },
+        {
+            "column": "date",
+            "type": "date"
+        },
+        {
+            "column": "wm_yr_wk",
+            "type": "int"
+        },
+        {
+            "column": "weekday",
+            "type": "varchar(20)"
+        },
+        {
+            "column": "wday",
+            "type": "int"
+        },
+        {
+            "column": "month",
+            "type": "int"
+        },
+        {
+            "column": "year",
+            "type": "int"
+        },
+        {
+            "column": "event_name_1",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "event_type_1",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "event_name_2",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "event_type_2",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "snap_CA",
+            "type": "tinyint(1)"
+        },
+        {
+            "column": "snap_TX",
+            "type": "tinyint(1)"
+        },
+        {
+            "column": "snap_WI",
+            "type": "tinyint(1)"
+        }
+    ],
+    "forecast_experiments": [
+        {
+            "column": "experiment_id",
+            "type": "int"
+        },
+        {
+            "column": "model_name",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "parameters",
+            "type": "json"
+        },
+        {
+            "column": "mae",
+            "type": "float"
+        },
+        {
+            "column": "rmse",
+            "type": "float"
+        },
+        {
+            "column": "mape",
+            "type": "float"
+        },
+        {
+            "column": "train_time",
+            "type": "float"
+        },
+        {
+            "column": "predict_time",
+            "type": "float"
+        },
+        {
+            "column": "created_at",
+            "type": "timestamp"
+        }
+    ],
+    "forecast_predictions": [
+        {
+            "column": "prediction_id",
+            "type": "int"
+        },
+        {
+            "column": "model_name",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "forecast_date",
+            "type": "date"
+        },
+        {
+            "column": "actual",
+            "type": "float"
+        },
+        {
+            "column": "prediction",
+            "type": "float"
+        }
+    ],
+    "item_dim": [
+        {
+            "column": "item_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "dept_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "cat_id",
+            "type": "varchar(50)"
+        }
+    ],
+    "price_fact": [
+        {
+            "column": "store_id",
+            "type": "varchar(20)"
+        },
+        {
+            "column": "item_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "wm_yr_wk",
+            "type": "int"
+        },
+        {
+            "column": "sell_price",
+            "type": "decimal(10,2)"
+        }
+    ],
+    "sales_enriched": [
+        {
+            "column": "item_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "dept_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "cat_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "store_id",
+            "type": "varchar(20)"
+        },
+        {
+            "column": "state_id",
+            "type": "varchar(10)"
+        },
+        {
+            "column": "date",
+            "type": "date"
+        },
+        {
+            "column": "weekday",
+            "type": "varchar(20)"
+        },
+        {
+            "column": "month",
+            "type": "int"
+        },
+        {
+            "column": "year",
+            "type": "int"
+        },
+        {
+            "column": "event_name_1",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "event_type_1",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "event_name_2",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "event_type_2",
+            "type": "varchar(100)"
+        },
+        {
+            "column": "snap_CA",
+            "type": "tinyint(1)"
+        },
+        {
+            "column": "snap_TX",
+            "type": "tinyint(1)"
+        },
+        {
+            "column": "snap_WI",
+            "type": "tinyint(1)"
+        },
+        {
+            "column": "sales",
+            "type": "int"
+        }
+    ],
+    "sales_fact": [
+        {
+            "column": "item_id",
+            "type": "varchar(50)"
+        },
+        {
+            "column": "store_id",
+            "type": "varchar(20)"
+        },
+        {
+            "column": "d",
+            "type": "varchar(10)"
+        },
+        {
+            "column": "sales",
+            "type": "int"
+        }
+    ],
+    "store_dim": [
+        {
+            "column": "store_id",
+            "type": "varchar(20)"
+        },
+        {
+            "column": "state_id",
+            "type": "varchar(10)"
+        }
+    ]
+}

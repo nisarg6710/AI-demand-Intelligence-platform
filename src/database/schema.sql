@@ -159,3 +159,43 @@ CREATE TABLE IF NOT EXISTS forecast_predictions (
 
     prediction FLOAT
 );
+
+-- some analytics tables
+CREATE TABLE analytics_monthly_sales AS
+SELECT
+    c.year,
+    c.month,
+    SUM(s.sales) AS total_sales
+FROM sales_fact s
+JOIN calendar_dim c
+    ON s.d = c.d
+GROUP BY
+    c.year,
+    c.month;
+    
+CREATE TABLE analytics_store_performance AS
+SELECT
+    store_id,
+    SUM(sales) AS total_sales,
+    AVG(sales) AS average_sales,
+    MAX(sales) AS peak_sales
+FROM sales_fact
+GROUP BY store_id;
+
+CREATE TABLE analytics_category_performance AS
+SELECT
+    i.cat_id,
+    SUM(s.sales) AS total_sales
+FROM sales_fact s
+JOIN item_dim i
+    ON s.item_id = i.item_id
+GROUP BY i.cat_id;
+
+CREATE TABLE analytics_department_performance AS
+SELECT
+    i.dept_id,
+    SUM(s.sales) AS total_sales
+FROM sales_fact s
+JOIN item_dim i
+    ON s.item_id = i.item_id
+GROUP BY i.dept_id;

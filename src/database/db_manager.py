@@ -27,4 +27,23 @@ class DatabaseManager:
         self.cursor.close()
         self.connection.close()
 
+    def fetchall(self):
+        return self.cursor.fetchall()
+
+
+    def fetchone(self):
+        return self.cursor.fetchone()
+
+
+    def columns(self):
+        return [column[0] for column in self.cursor.description]
     
+    def fetch_dataframe(self):
+
+        import pandas as pd
+
+        rows = self.fetchall()
+
+        cols = self.columns()
+
+        return pd.DataFrame(rows, columns=cols)
