@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import List
 
 
 class ChatRequest(BaseModel):
@@ -51,3 +52,13 @@ class ReportResponse(BaseModel):
     question: str
     selected_agents: list[str]
     report: str
+
+class MonthlySalesPoint(BaseModel):
+    year: int
+    month: int
+    total_sales: float
+
+
+class MonthlySalesResponse(BaseModel):
+    success: bool
+    data: List[MonthlySalesPoint]

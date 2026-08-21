@@ -45,3 +45,7 @@ markdown
 sentence-transformers
 
 faiss-cpu
+
+react-markdown
+
+recharts

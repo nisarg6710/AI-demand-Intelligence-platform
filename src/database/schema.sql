@@ -199,3 +199,56 @@ FROM sales_fact s
 JOIN item_dim i
     ON s.item_id = i.item_id
 GROUP BY i.dept_id;
+
+CREATE TABLE analytics_sales_summary AS
+SELECT
+    COUNT(*) AS total_records,
+    SUM(sales) AS total_sales,
+    AVG(sales) AS average_sales,
+    MIN(sales) AS minimum_sales,
+    MAX(sales) AS maximum_sales
+FROM sales_fact;
+
+CREATE TABLE analytics_product_performance AS
+SELECT
+    item_id,
+    SUM(sales) AS total_sales
+FROM sales_fact
+GROUP BY item_id;
+
+CREATE TABLE analytics_weekday_sales AS
+SELECT
+    weekday,
+    SUM(sales) AS total_sales
+FROM sales_enriched
+GROUP BY weekday;
+
+CREATE TABLE analytics_price_summary AS
+SELECT
+    AVG(sell_price) AS average_price,
+    MIN(sell_price) AS minimum_price,
+    MAX(sell_price) AS maximum_price
+FROM price_fact;
+
+UPDATE analytics_price_summary
+SET average_price = (
+    SELECT CAST(AVG(sell_price) AS DECIMAL(18,6))
+    FROM price_fact
+)
+WHERE id = 1;
+
+CREATE TABLE analytics_sales_distribution AS
+SELECT
+    COUNT(*) AS total_transactions,
+    AVG(sales) AS average_sales,
+    STDDEV(sales) AS sales_stddev,
+    MIN(sales) AS minimum_sales,
+    MAX(sales) AS maximum_sales
+FROM sales_fact;
+
+UPDATE analytics_sales_distribution
+SET average_sales = (
+    SELECT CAST(AVG(sales) AS DECIMAL(18,6))
+    FROM sales_fact
+)
+WHERE id = 1;

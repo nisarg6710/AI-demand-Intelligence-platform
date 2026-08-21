@@ -23,10 +23,16 @@ class ForecastAgent(BaseAgent):
     - Use when the user wants to compare forecasting models.
 
     3. get_predictions
-    - Use when the user asks for predictions from a specific model.
+    - Use when the user asks for future demand predictions.
+    - If the user specifies a model, use that model.
+    - If the user does NOT specify a model, use best_model.
 
     4. get_experiments
     - Use when the user asks about forecasting experiments.
+
+    5. get_future_forecast
+    - Use when the user asks for future demand forecasts.
+    - If the user does not specify a forecast horizon, use 12 months.
 
     Return ONLY the action name.
 
@@ -51,6 +57,12 @@ class ForecastAgent(BaseAgent):
 
     Answer:
     get_predictions ProphetModel
+
+    Question:
+    Forecast demand for the next 12 months.
+
+    Answer:
+    get_future_forecast 12
 
     Question:
     Show all forecasting experiments.
@@ -101,35 +113,111 @@ Do not answer unrelated business questions.
     def _execute_action(self, action: str):
         """
         Executes the selected ForecastTool action.
+
+        Handles minor formatting variations returned by the LLM,
+        such as:
+            get_predictions BestModel
+            get_predictions best_model
+            get_predictions get_best_model
         """
 
         try:
 
-            parts = action.strip().split(maxsplit=1)
+            action = action.strip()
 
-            action_name = parts[0]
+            parts = action.split(maxsplit=1)
+
+            if not parts:
+                raise ValueError("No forecasting action returned.")
+
+            action_name = parts[0].strip().lower()
+
+            # --------------------------------------------------
+            # Best model
+            # --------------------------------------------------
 
             if action_name == "get_best_model":
+
                 return self.tool.get_best_model()
 
+            # --------------------------------------------------
+            # Compare models
+            # --------------------------------------------------
+
             elif action_name == "compare_models":
+
                 return self.tool.compare_models()
 
+            # --------------------------------------------------
+            # Experiments
+            # --------------------------------------------------
+
             elif action_name == "get_experiments":
+
                 return self.tool.get_experiments()
+
+            elif action_name == "get_future_forecast":
+
+                periods = 12
+
+                if len(parts) >= 2:
+
+                    try:
+                        periods = int(parts[1])
+
+                    except ValueError:
+                        periods = 12
+
+                return self.tool.get_future_forecast(periods)
+
+
+            # --------------------------------------------------
+            # Predictions
+            # --------------------------------------------------
+
+
 
             elif action_name == "get_predictions":
 
                 if len(parts) < 2:
-                    raise ValueError("Model name not provided.")
 
-                model_name = parts[1]
+                    raise ValueError(
+                        "Model name not provided."
+                    )
+
+                model_name = parts[1].strip()
+
+
+                # --------------------------------------------------
+                # Normalize LLM-generated best-model aliases
+                # --------------------------------------------------
+
+                normalized_model = (
+                    model_name
+                    .lower()
+                    .replace("-", "_")
+                    .replace(" ", "_")
+                )
+
+                if normalized_model in {
+                    "best_model",
+                    "bestmodel",
+                    "get_best_model",
+                }:
+
+                    model_name = "best_model"
 
                 return self.tool.get_predictions(model_name)
 
+            # --------------------------------------------------
+            # Unknown action
+            # --------------------------------------------------
+
             else:
 
-                raise ValueError(f"Unknown action: {action_name}")
+                raise ValueError(
+                    f"Unknown forecasting action: {action}"
+                )
 
         except Exception as e:
 
@@ -137,7 +225,7 @@ Do not answer unrelated business questions.
 
     def _explain_results(self, question: str, tool_result):
         """
-        Uses the LLM to explain the forecasting results.
+        Uses the LLM to explain forecasting results.
         """
 
         if not tool_result["success"]:
@@ -152,16 +240,35 @@ Do not answer unrelated business questions.
     Forecast Data:
     {data.to_string(index=False)}
 
-    Provide a concise business-focused explanation.
+    Provide a concise business-focused explanation of the
+    future demand forecast.
 
     Your response should include:
 
-    - Summary of the results
-    - Key insights
-    - Any important trends or observations
-    - Business implications
+    1. Forecast Summary
+    - Explain the expected demand over the forecast horizon.
 
-    Keep the explanation professional and easy to understand.
+    2. Key Insights
+    - Identify high and low forecast periods.
+    - Mention notable changes in expected demand.
+
+    3. Trend and Seasonality
+    - Explain whether demand appears to increase,
+    decrease, or remain stable.
+    - Mention relevant seasonal patterns if visible.
+
+    4. Business Implications
+    - Explain what the forecast means for inventory,
+    staffing, procurement, and operations.
+
+    5. Recommendations
+    - Provide practical actions based on the forecast.
+
+    Important:
+    - Do not invent numbers.
+    - Use only the supplied forecast data.
+    - Clearly distinguish predictions from historical observations.
+    - Keep the explanation professional and concise.
     """
 
         return self.llm.generate(

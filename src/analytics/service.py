@@ -14,43 +14,55 @@ class AnalyticsService:
         Executes a SQL query and returns a DataFrame.
         """
 
+        print("\n========== ANALYTICS QUERY ==========")
+        print(query)
+
         db = DatabaseManager()
 
         try:
             db.execute(query, values)
-            return db.fetch_dataframe()
+
+            print("QUERY EXECUTED")
+
+            df = db.fetch_dataframe()
+
+            print("ROWS RETURNED:", len(df))
+
+            return df
+
         finally:
             db.close()
 
     def get_sales_summary(self):
         """
-        Returns high-level sales KPIs.
+        Returns high-level sales KPIs
+        from the precomputed analytics summary table.
         """
 
         query = """
         SELECT
-            COUNT(*) AS total_records,
-            SUM(sales) AS total_sales,
-            AVG(sales) AS average_sales,
-            MIN(sales) AS minimum_sales,
-            MAX(sales) AS maximum_sales
-        FROM sales_fact;
+            total_records,
+            total_sales,
+            average_sales,
+            minimum_sales,
+            maximum_sales
+        FROM analytics_sales_summary
+        WHERE id = 1;
         """
 
-        df = self._run_query(query)
-        return df
+        return self._run_query(query)
 
     def get_top_stores(self):
         """
-        Returns total sales for each store.
+        Returns the highest-performing stores
+        using precomputed analytics data.
         """
 
         query = """
         SELECT
             store_id,
-            SUM(sales) AS total_sales
-        FROM sales_fact
-        GROUP BY store_id
+            total_sales
+        FROM analytics_store_performance
         ORDER BY total_sales DESC;
         """
 
@@ -58,15 +70,15 @@ class AnalyticsService:
 
     def get_top_products(self):
         """
-        Returns the highest selling products.
+        Returns the highest-selling products
+        using precomputed analytics data.
         """
 
         query = """
         SELECT
             item_id,
-            SUM(sales) AS total_sales
-        FROM sales_fact
-        GROUP BY item_id
+            total_sales
+        FROM analytics_product_performance
         ORDER BY total_sales DESC
         LIMIT 10;
         """
@@ -88,13 +100,16 @@ class AnalyticsService:
     
 
     def get_weekday_sales(self):
+        """
+        Returns weekday sales performance
+        using precomputed analytics data.
+        """
 
         query = """
         SELECT
             weekday,
-            SUM(sales) AS total_sales
-        FROM sales_enriched
-        GROUP BY weekday
+            total_sales
+        FROM analytics_weekday_sales
         ORDER BY FIELD(
             weekday,
             'Monday',
@@ -128,36 +143,37 @@ class AnalyticsService:
 
     def get_price_summary(self):
         """
-        Returns price statistics.
+        Returns precomputed price statistics.
         """
 
         query = """
         SELECT
-            AVG(sell_price) AS average_price,
-            MIN(sell_price) AS minimum_price,
-            MAX(sell_price) AS maximum_price
-        FROM price_fact;
+            average_price,
+            minimum_price,
+            maximum_price
+        FROM analytics_price_summary
+        WHERE id = 1;
         """
 
         return self._run_query(query)
 
     def get_sales_distribution(self):
         """
-        Returns sales distribution statistics.
+        Returns precomputed sales distribution statistics.
         """
 
         query = """
         SELECT
-            COUNT(*) AS total_transactions,
-            AVG(sales) AS average_sales,
-            STDDEV(sales) AS sales_stddev,
-            MIN(sales) AS minimum_sales,
-            MAX(sales) AS maximum_sales
-        FROM sales_fact;
+            total_transactions,
+            average_sales,
+            sales_stddev,
+            minimum_sales,
+            maximum_sales
+        FROM analytics_sales_distribution
+        WHERE id = 1;
         """
 
         return self._run_query(query)
-
     def get_category_performance(self):
 
         query = """

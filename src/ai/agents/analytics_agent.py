@@ -161,14 +161,21 @@ Do not recommend inventory policies.
     Please provide:
 
     1. Executive Summary
-
     2. Key Insights
-
     3. Important Trends
-
     4. Business Recommendations
 
-    Keep the response concise and business-oriented.
+    Important data interpretation rules:
+
+    - Treat total_records as sales records, not customer transactions.
+    - Treat total_sales as units sold unless the data explicitly represents monetary revenue.
+    - Do not call total_sales "revenue".
+    - Do not call average_sales "average transaction value".
+    - Do not infer customer behavior, customer frequency, or customer demographics unless the provided data supports it.
+    - Do not invent business context that is not supported by the analytics result.
+    - Clearly distinguish facts from reasonable business interpretations.
+    - When discussing zero sales, describe them as zero-unit sales records rather than assuming they are POS errors.
+    - Keep the response concise and business-oriented.
     """
 
         return self.llm.generate(
@@ -178,14 +185,33 @@ Do not recommend inventory policies.
 
     def run(self, question: str):
 
+        print("\n========== ANALYTICS AGENT ==========")
+        print("Question:", question)
+
+        print("STEP 1: Choosing action...")
         action = self._choose_action(question)
 
+        print("STEP 1 COMPLETE")
+        print("Selected action:", action)
+
+        print("STEP 2: Executing tool...")
         tool_result = self._execute_action(action)
 
+        print("STEP 2 COMPLETE")
+        print("Tool success:", tool_result.get("success"))
+
         if not tool_result["success"]:
+            print("Tool error:", tool_result.get("error"))
             return tool_result["error"]
 
-        return self._explain_results(
+        print("STEP 3: Explaining results...")
+
+        result = self._explain_results(
             question,
             tool_result
         )
+
+        print("STEP 3 COMPLETE")
+        print("========== ANALYTICS COMPLETE ==========\n")
+
+        return result

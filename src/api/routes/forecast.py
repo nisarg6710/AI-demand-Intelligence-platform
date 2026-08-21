@@ -3,6 +3,8 @@ from fastapi import APIRouter, HTTPException
 from src.api.schema import ForecastRequest, ForecastResponse
 from src.ai.agents.forecast_agent import ForecastAgent
 
+import traceback
+
 
 router = APIRouter(
     prefix="/forecast",
@@ -32,6 +34,8 @@ def forecast(request: ForecastRequest):
         )
 
     except Exception as e:
+
+        traceback.print_exc()
 
         raise HTTPException(
             status_code=500,
