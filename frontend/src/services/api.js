@@ -67,4 +67,33 @@ export const getCategoryPerformance = async () => {
   return response.data;
 };
 
+export const getForecastPredictions = async () => {
+  const response = await api.get("/forecast/predictions");
+  return response.data;
+};
+
+export const getDepartmentPerformance = async () => {
+  const response = await api.get(
+    "/analytics/department-performance"
+  );
+
+  return response.data;
+};
+
+export const getTopProducts = async () => {
+  const response = await api.get(
+    "/analytics/top-products"
+  );
+
+  return response.data;
+};
+
+export const getWeekdaySales = async () => {
+  const response = await api.get(
+    "/analytics/weekday-sales"
+  );
+
+  return response.data;
+};
+
 export default api;

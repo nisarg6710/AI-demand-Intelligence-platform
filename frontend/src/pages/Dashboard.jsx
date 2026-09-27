@@ -11,15 +11,19 @@ import {
 
 import MetricCard from "../components/MetricCard";
 import {
-  getAnalytics,
   getForecast,
   getMonthlySales,
+  getSalesSummary,
+  getTopStores,
+  getCategoryPerformance,
 } from "../services/api";
 
 // import ReactMarkdown from "react-markdown";
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -30,9 +34,12 @@ import {
 
 function Dashboard() {
   const [salesSummary, setSalesSummary] = useState(null);
-  const [monthlySales, setMonthlySales] = useState(null);
+  const [, setMonthlySales] = useState(null);
   const [monthlySalesData, setMonthlySalesData] = useState([]);
   const [forecast, setForecast] = useState(null);
+
+  const [topStores, setTopStores] = useState([]);
+  const [categoryPerformance, setCategoryPerformance] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,15 +50,19 @@ function Dashboard() {
       setError(null);
 
       const results = await Promise.allSettled([
-        getAnalytics("Give me a sales summary."),
+        getSalesSummary(),
         getMonthlySales(),
         getForecast("What is the best forecasting model."),
+        getTopStores(),
+        getCategoryPerformance(),
       ]);
 
       const [
         summaryResult,
         monthlyResult,
         forecastResult,
+        topStoresResult,
+        categoryResult,
       ] = results;
 
       // -----------------------------
@@ -59,6 +70,20 @@ function Dashboard() {
       // -----------------------------
       if (summaryResult.status === "fulfilled") {
         setSalesSummary(summaryResult.value);
+      } else {
+        console.error(
+          "Sales summary failed:",
+          monthlyResult.reason,
+        );
+
+        setMonthlySales(null);
+      }
+
+      // -----------------------------
+      // Monthly Sales
+      // -----------------------------
+      if (monthlyResult.status === "fulfilled") {
+        setMonthlySales(monthlyResult.value);
 
         const chartData = monthlyResult.value.data.map((item) => ({
           period: `${item.year}-${String(item.month).padStart(2, "0")}`,
@@ -66,6 +91,7 @@ function Dashboard() {
         }));
 
         setMonthlySalesData(chartData);
+
       } else {
         console.error(
           "Monthly sales failed:",
@@ -74,20 +100,6 @@ function Dashboard() {
 
         setMonthlySales(null);
         setMonthlySalesData([]);
-      }
-
-      // -----------------------------
-      // Monthly Sales
-      // -----------------------------
-      if (monthlyResult.status === "fulfilled") {
-        setMonthlySales(monthlyResult.value);
-      } else {
-        console.error(
-          "Monthly sales failed:",
-          monthlyResult.reason,
-        );
-
-        setMonthlySales(null);
       }
 
       // -----------------------------
@@ -103,6 +115,36 @@ function Dashboard() {
 
         setForecast(null);
       }
+
+      // -----------------------------
+      // Top Stores
+      // -----------------------------
+      if (topStoresResult.status === "fulfilled") {
+        setTopStores(topStoresResult.value.data || []);
+      } else {
+        console.error(
+          "Top stores failed:",
+          topStoresResult.reason,
+        );
+
+        setTopStores([]);
+      }   
+
+      // -----------------------------
+      // Category Performance
+      // -----------------------------
+      if (categoryResult.status === "fulfilled") {
+        setCategoryPerformance(categoryResult.value.data || []);
+      } else {
+        console.error(
+          "Category performance failed:",
+          categoryResult.reason,
+        );
+
+        setCategoryPerformance([]);
+      }
+
+
 
       // -----------------------------
       // Overall Status
@@ -162,45 +204,49 @@ function Dashboard() {
       <div className="metrics-grid">
 
         <MetricCard
-          title="Total Revenue"
-          value={
-            loading
-              ? "..."
-              : "$65.7M"
-          }
-          description="Historical revenue"
-          icon={<TrendingUp size={20} />}
-        />
-
-        <MetricCard
           title="Total Sales"
           value={
             loading
               ? "..."
-              : "58.3M"
+              : salesSummary?.data?.[0]?.total_sales != null
+                ? `${(salesSummary.data[0].total_sales / 1000000).toFixed(1)}M`
+                : "Unavailable"
           }
-          description="Sales records analyzed"
+          description="Total sales value"
+          icon={<TrendingUp size={20} />}
+        />
+
+        <MetricCard
+          title="Sales Records"
+          value={
+            loading
+              ? "..."
+              : salesSummary?.data?.[0]?.total_records != null
+                ? Number(
+                    salesSummary.data[0].total_records
+                  ).toLocaleString()
+                : "Unavailable"
+          }
+          description="Records analyzed"
           icon={<ShoppingCart size={20} />}
         />
 
         <MetricCard
-          title="Active Products"
+          title="Average Sale"
           value={
             loading
               ? "..."
-              : "3,049"
+              : salesSummary?.data?.[0]?.average_sales != null
+                ? salesSummary.data[0].average_sales.toFixed(2)
+                : "Unavailable"
           }
-          description="Products in catalog"
+          description="Average sales value per record"
           icon={<Package size={20} />}
         />
 
         <MetricCard
           title="Stores"
-          value={
-            loading
-              ? "..."
-              : "10"
-          }
+          value="10"
           description="Retail locations"
           icon={<Store size={20} />}
         />
@@ -343,6 +389,115 @@ function Dashboard() {
 
         </div>
 
+      </div>
+      <div className="dashboard-grid">
+        {/* Top Stores */}
+        <div className="dashboard-card">
+          <div className="card-header">
+            <div>
+              <h2>Top Performing Stores</h2>
+              <p>Stores ranked by total sales value</p>
+            </div>
+            <Store size={20} />
+          </div>
+
+          <div className="chart-container">
+            {loading ? (
+              <div className="loading-state">
+                Loading store performance...
+              </div>
+            ) : topStores.length > 0 ? (
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart
+                  data={topStores}
+                  margin={{
+                    top: 10,
+                    right: 20,
+                    left: 10,
+                    bottom: 10,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="store_id" />
+                  <YAxis
+                    tick={{ fontSize: 12 }}
+                    tickFormatter={(value) =>
+                      `$${(value / 1000000).toFixed(1)}M`
+                    }
+                  />
+                  <Tooltip
+                    formatter={(value) =>
+                      `$${Number(value).toLocaleString()}`
+                    }
+                  />
+                  <Bar
+                    dataKey="total_sales"
+                    fill="#2563eb"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="loading-state">
+                Store performance is temporarily unavailable.
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Category Performance */}
+        <div className="dashboard-card">
+          <div className="card-header">
+            <div>
+              <h2>Category Performance</h2>
+              <p>Sales distribution across categories</p>
+            </div>
+            <Package size={20} />
+          </div>
+
+          <div className="chart-container">
+            {loading ? (
+              <div className="loading-state">
+                Loading category performance...
+              </div>
+            ) : categoryPerformance.length > 0 ? (
+              <ResponsiveContainer width="100%" height={320}>
+                <BarChart
+                  data={categoryPerformance}
+                  margin={{
+                    top: 10,
+                    right: 20,
+                    left: 10,
+                    bottom: 10,
+                  }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="cat_id" />
+                  <YAxis
+                    tick={{ fontSize: 12 }}
+                    tickFormatter={(value) =>
+                      `$${(value / 1000000).toFixed(1)}M`
+                    }
+                  />
+                  <Tooltip
+                    formatter={(value) =>
+                      `$${Number(value).toLocaleString()}`
+                    }
+                  />
+                  <Bar
+                    dataKey="total_sales"
+                    fill="#2563eb"
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="loading-state">
+                Category performance is temporarily unavailable.
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* =========================

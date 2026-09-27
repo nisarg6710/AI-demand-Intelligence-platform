@@ -75,3 +75,171 @@ def monthly_sales():
             status_code=500,
             detail=str(e),
         )
+
+
+@router.get(
+    "/summary",
+)
+def sales_summary():
+
+    try:
+
+        df = analytics_service.get_sales_summary()
+
+        data = json.loads(
+            df.to_json(orient="records")
+        )
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@router.get(
+    "/top-stores",
+)
+def top_stores():
+
+    try:
+
+        df = analytics_service.get_top_stores()
+
+        data = json.loads(
+            df.to_json(orient="records")
+        )
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@router.get(
+    "/category-performance",
+)
+def category_performance():
+
+    try:
+
+        df = analytics_service.get_category_performance()
+
+        data = json.loads(
+            df.to_json(orient="records")
+        )
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@router.get(
+    "/department-performance",
+)
+def department_performance():
+
+    try:
+
+        df = analytics_service.get_department_performance()
+
+        data = json.loads(
+            df.to_json(orient="records")
+        )
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@router.get(
+    "/top-products",
+)
+def top_products():
+
+    try:
+
+        df = analytics_service.get_top_products()
+
+        data = json.loads(
+            df.to_json(orient="records")
+        )
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+
+@router.get(
+    "/weekday-sales",
+)
+def weekday_sales():
+
+    try:
+
+        df = analytics_service.get_weekday_sales()
+
+        data = json.loads(
+            df.to_json(orient="records")
+        )
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )

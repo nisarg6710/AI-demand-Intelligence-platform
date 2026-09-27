@@ -41,3 +41,31 @@ def forecast(request: ForecastRequest):
             status_code=500,
             detail=str(e),
         )
+
+
+@router.get(
+    "/predictions",
+)
+def forecast_predictions():
+
+    try:
+
+        # Use the existing forecasting service/logic
+        # that generates the forecast predictions.
+        result = forecast_agent.run(
+            "Get the forecast predictions."
+        )
+
+        return {
+            "success": True,
+            "data": result,
+        }
+
+    except Exception as e:
+
+        traceback.print_exc()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )

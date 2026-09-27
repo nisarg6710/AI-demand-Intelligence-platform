@@ -275,3 +275,30 @@ SELECT
     MAX(forecast_date) AS last_date
 FROM forecast_predictions
 WHERE model_name = 'ProphetModel';
+
+
+SELECT VERSION();
+
+-- verification 2.0:-
+
+SELECT COUNT(*) AS sales_fact_count
+FROM sales_fact;
+
+SELECT COUNT(*) AS sales_enriched_count
+FROM sales_enriched;
+
+SELECT
+    (SELECT COUNT(*) FROM calendar_dim) AS calendar_dim,
+    (SELECT COUNT(*) FROM item_dim) AS item_dim,
+    (SELECT COUNT(*) FROM store_dim) AS store_dim,
+    (SELECT COUNT(*) FROM price_fact) AS price_fact,
+    (SELECT COUNT(*) FROM sales_fact) AS sales_fact;
+    
+SELECT
+    (SELECT COUNT(*) FROM analytics_monthly_sales) AS monthly_sales,
+    (SELECT COUNT(*) FROM analytics_store_performance) AS store_performance,
+    (SELECT COUNT(*) FROM analytics_category_performance) AS category_performance,
+    (SELECT COUNT(*) FROM analytics_department_performance) AS department_performance,
+    (SELECT COUNT(*) FROM analytics_product_performance) AS product_performance,
+    (SELECT COUNT(*) FROM analytics_weekday_sales) AS weekday_sales,
+    (SELECT COUNT(*) FROM analytics_price_summary) AS price_summary;

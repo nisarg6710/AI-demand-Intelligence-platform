@@ -23,6 +23,7 @@ python-dotenv
 
 mlflow
 dvc
+dill
 
 jupyter
 notebook
@@ -46,6 +47,6 @@ sentence-transformers
 
 faiss-cpu
 
-react-markdown
+pyyaml
 
-recharts
+## backend run :--> python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000

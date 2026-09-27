@@ -1,16 +1,26 @@
 import { useEffect, useState } from "react";
-
 import {
   BarChart3,
-  TrendingUp,
-  Send,
+  Store,
+  Package,
+  CalendarDays,
+  RefreshCw,
 } from "lucide-react";
 
-import ReactMarkdown from "react-markdown";
+import {
+  getMonthlySales,
+  getTopStores,
+  getCategoryPerformance,
+  getDepartmentPerformance,
+  getTopProducts,
+  getWeekdaySales,
+} from "../services/api";
 
 import {
   LineChart,
   Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -18,415 +28,400 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import {
-  getAnalytics,
-  getMonthlySales,
-} from "../services/api";
-
-
 function Analytics() {
-
-  const [question, setQuestion] = useState(
-    "Show me the monthly sales trend."
-  );
-
-  const [analyticsResult, setAnalyticsResult] = useState(null);
-
   const [monthlySales, setMonthlySales] = useState([]);
+  const [topStores, setTopStores] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [weekdays, setWeekdays] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-
-  const [chartLoading, setChartLoading] = useState(true);
-
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
-  // =========================
-  // Load Monthly Sales
-  // =========================
-
   useEffect(() => {
-
-    const loadMonthlySales = async () => {
-
-      try {
-
-        setChartLoading(true);
-
-        const result = await getMonthlySales();
-
-        setMonthlySales(result.data || []);
-
-      } catch (err) {
-
-        console.error(
-          "Monthly sales loading error:",
-          err
-        );
-
-        setError(
-          "Unable to load monthly sales data."
-        );
-
-      } finally {
-
-        setChartLoading(false);
-
-      }
-
-    };
-
-    loadMonthlySales();
-
-  }, []);
-
-
-  // =========================
-  // Ask Analytics Agent
-  // =========================
-
-  const handleAnalyze = async () => {
-
-    if (!question.trim()) {
-      return;
-    }
-
-    try {
-
+    const loadAnalytics = async () => {
       setLoading(true);
-
       setError(null);
 
-      const result = await getAnalytics(
-        question
-      );
+      const results = await Promise.allSettled([
+        getMonthlySales(),
+        getTopStores(),
+        getCategoryPerformance(),
+        getDepartmentPerformance(),
+        getTopProducts(),
+        getWeekdaySales(),
+      ]);
 
-      setAnalyticsResult(result);
+      const [
+        monthlyResult,
+        storesResult,
+        categoryResult,
+        departmentResult,
+        productResult,
+        weekdayResult,
+      ] = results;
 
-    } catch (err) {
+      if (monthlyResult.status === "fulfilled") {
+        setMonthlySales(monthlyResult.value.data || []);
+      }
 
-      console.error(
-        "Analytics request failed:",
-        err
-      );
+      if (storesResult.status === "fulfilled") {
+        setTopStores(storesResult.value.data || []);
+      }
 
-      setAnalyticsResult(null);
+      if (categoryResult.status === "fulfilled") {
+        setCategories(categoryResult.value.data || []);
+      }
 
-      setError(
-        "Unable to analyze the question. Please try again."
-      );
+      if (departmentResult.status === "fulfilled") {
+        setDepartments(departmentResult.value.data || []);
+      }
 
-    } finally {
+      if (productResult.status === "fulfilled") {
+        setProducts(productResult.value.data || []);
+      }
+
+      if (weekdayResult.status === "fulfilled") {
+        setWeekdays(weekdayResult.value.data || []);
+      }
+
+      if (results.some((result) => result.status === "rejected")) {
+        setError(
+          "Some analytics data is temporarily unavailable."
+        );
+      }
 
       setLoading(false);
+    };
 
-    }
+    loadAnalytics();
+  }, []);
 
-  };
-
-
-  // =========================
-  // Chart Data
-  // =========================
-
-  const chartData = monthlySales.map(
-    (item) => ({
-      period:
-        `${item.year}-${String(item.month).padStart(2, "0")}`,
-
-      sales: item.total_sales,
-    })
-  );
-
+  const monthlyChartData = monthlySales.map((item) => ({
+    period: `${item.year}-${String(item.month).padStart(2, "0")}`,
+    sales: item.total_sales,
+  }));
 
   return (
-
     <div className="analytics-page">
 
-      {/* =========================
-          Page Header
-      ========================= */}
-
       <div className="page-header">
-
         <div>
-
           <h1>Analytics</h1>
-
           <p>
-            Explore historical sales,
-            trends and business performance.
+            Explore historical sales and business performance.
           </p>
-
         </div>
 
         <div className="dashboard-status">
-
           <span className="status-dot"></span>
-
-          Business Intelligence
-
+          Live Analytics
         </div>
-
       </div>
-
-
-      {/* =========================
-          Error
-      ========================= */}
 
       {error && (
-
         <div className="error-banner">
-
           {error}
-
         </div>
-
       )}
 
+      {loading ? (
+        <div className="dashboard-card">
+          <div className="loading-state">
+            <RefreshCw size={20} className="spin" />
+            Loading analytics...
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Monthly Sales */}
 
-      {/* =========================
-          Analytics Question
-      ========================= */}
+          <div className="dashboard-card">
 
-      <div className="dashboard-card analytics-question-card">
+            <div className="card-header">
+              <div>
+                <h2>Monthly Sales</h2>
+                <p>Historical monthly sales trend</p>
+              </div>
 
-        <div className="card-header">
+              <BarChart3 size={20} />
+            </div>
 
-          <div>
+            <div className="chart-container">
 
-            <h2>
-              Ask an Analytics Question
-            </h2>
+              <ResponsiveContainer width="100%" height={360}>
+                <LineChart data={monthlyChartData}>
 
-            <p>
-              Use natural language to explore
-              your retail data.
-            </p>
+                  <CartesianGrid strokeDasharray="3 3" />
+
+                  <XAxis
+                    dataKey="period"
+                    interval={5}
+                  />
+
+                  <YAxis
+                    tickFormatter={(value) =>
+                      `$${(value / 1000000).toFixed(1)}M`
+                    }
+                  />
+
+                  <Tooltip
+                    formatter={(value) =>
+                      `$${Number(value).toLocaleString()}`
+                    }
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="sales"
+                    stroke="#2563eb"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+
+                </LineChart>
+              </ResponsiveContainer>
+
+            </div>
 
           </div>
 
-          <BarChart3 size={20} />
+          {/* Store + Category */}
 
-        </div>
+          <div className="dashboard-grid">
 
+            <div className="dashboard-card">
 
-        <div className="analytics-input-area">
+              <div className="card-header">
+                <div>
+                  <h2>Store Performance</h2>
+                  <p>Total sales by store</p>
+                </div>
 
-          <textarea
-            value={question}
-            onChange={(e) =>
-              setQuestion(e.target.value)
-            }
-            placeholder="Ask a business analytics question..."
-            rows={4}
-          />
+                <Store size={20} />
+              </div>
 
-          <button
-            className="analyze-button"
-            onClick={handleAnalyze}
-            disabled={loading}
-          >
+              <div className="chart-container">
 
-            <Send size={16} />
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={topStores}>
 
-            {loading
-              ? "Analyzing..."
-              : "Analyze"}
+                    <CartesianGrid strokeDasharray="3 3" />
 
-          </button>
+                    <XAxis dataKey="store_id" />
 
-        </div>
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `$${(value / 1000000).toFixed(1)}M`
+                      }
+                    />
 
-      </div>
+                    <Tooltip
+                      formatter={(value) =>
+                        `$${Number(value).toLocaleString()}`
+                      }
+                    />
 
+                    <Bar
+                      dataKey="total_sales"
+                      fill="#2563eb"
+                    />
 
-      {/* =========================
-          Monthly Sales
-      ========================= */}
+                  </BarChart>
+                </ResponsiveContainer>
 
-      <div className="dashboard-card analytics-chart-card">
+              </div>
 
-        <div className="card-header">
+            </div>
 
-          <div>
+            <div className="dashboard-card">
 
-            <h2>
-              Monthly Sales Trend
-            </h2>
+              <div className="card-header">
+                <div>
+                  <h2>Category Performance</h2>
+                  <p>Total sales by category</p>
+                </div>
 
-            <p>
-              Historical monthly sales from
-              the retail data warehouse.
-            </p>
+                <Package size={20} />
+              </div>
+
+              <div className="chart-container">
+
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={categories}>
+
+                    <CartesianGrid strokeDasharray="3 3" />
+
+                    <XAxis dataKey="cat_id" />
+
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `$${(value / 1000000).toFixed(1)}M`
+                      }
+                    />
+
+                    <Tooltip
+                      formatter={(value) =>
+                        `$${Number(value).toLocaleString()}`
+                      }
+                    />
+
+                    <Bar
+                      dataKey="total_sales"
+                      fill="#2563eb"
+                    />
+
+                  </BarChart>
+                </ResponsiveContainer>
+
+              </div>
+
+            </div>
 
           </div>
 
-          <TrendingUp size={20} />
+          {/* Department + Weekday */}
 
-        </div>
+          <div className="dashboard-grid">
 
+            <div className="dashboard-card">
 
-        <div className="analytics-chart">
+              <div className="card-header">
+                <div>
+                  <h2>Department Performance</h2>
+                  <p>Total sales by department</p>
+                </div>
 
-          {chartLoading ? (
+                <BarChart3 size={20} />
+              </div>
 
-            <div className="loading-state">
+              <div className="chart-container">
 
-              Loading monthly sales...
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={departments}>
 
-            </div>
+                    <CartesianGrid strokeDasharray="3 3" />
 
-          ) : chartData.length > 0 ? (
+                    <XAxis dataKey="dept_id" />
 
-            <ResponsiveContainer
-              width="100%"
-              height={350}
-            >
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `$${(value / 1000000).toFixed(1)}M`
+                      }
+                    />
 
-              <LineChart
-                data={chartData}
-                margin={{
-                  top: 10,
-                  right: 20,
-                  left: 10,
-                  bottom: 10,
-                }}
-              >
+                    <Tooltip
+                      formatter={(value) =>
+                        `$${Number(value).toLocaleString()}`
+                      }
+                    />
 
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                />
+                    <Bar
+                      dataKey="total_sales"
+                      fill="#2563eb"
+                    />
 
-                <XAxis
-                  dataKey="period"
-                  tick={{
-                    fontSize: 11,
-                  }}
-                  interval={5}
-                />
+                  </BarChart>
+                </ResponsiveContainer>
 
-                <YAxis
-                  tick={{
-                    fontSize: 11,
-                  }}
-                  tickFormatter={(value) =>
-                    `$${(
-                      value / 1000000
-                    ).toFixed(1)}M`
-                  }
-                />
-
-                <Tooltip
-                  formatter={(value) =>
-                    `$${Number(
-                      value
-                    ).toLocaleString()}`
-                  }
-                />
-
-                <Line
-                  type="monotone"
-                  dataKey="sales"
-                  stroke="#2563eb"
-                  strokeWidth={2}
-                  dot={false}
-                />
-
-              </LineChart>
-
-            </ResponsiveContainer>
-
-          ) : (
-
-            <div className="loading-state">
-
-              Monthly sales data unavailable.
+              </div>
 
             </div>
 
-          )}
+            <div className="dashboard-card">
 
-        </div>
+              <div className="card-header">
+                <div>
+                  <h2>Weekday Sales</h2>
+                  <p>Sales distribution by weekday</p>
+                </div>
 
-      </div>
+                <CalendarDays size={20} />
+              </div>
 
+              <div className="chart-container">
 
-      {/* =========================
-          AI Analytics Result
-      ========================= */}
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={weekdays}>
 
-      <div className="dashboard-card analytics-result-card">
+                    <CartesianGrid strokeDasharray="3 3" />
 
-        <div className="card-header">
+                    <XAxis dataKey="weekday" />
 
-          <div>
+                    <YAxis
+                      tickFormatter={(value) =>
+                        `${(value / 1000000).toFixed(1)}M`
+                      }
+                    />
 
-            <h2>
-              AI Analytics Insight
-            </h2>
+                    <Tooltip
+                      formatter={(value) =>
+                        Number(value).toLocaleString()
+                      }
+                    />
 
-            <p>
-              Business interpretation generated
-              by the Analytics Agent.
-            </p>
+                    <Bar
+                      dataKey="total_sales"
+                      fill="#2563eb"
+                    />
+
+                  </BarChart>
+                </ResponsiveContainer>
+
+              </div>
+
+            </div>
 
           </div>
 
-          <BarChart3 size={20} />
+          {/* Top Products */}
 
-        </div>
+          <div className="dashboard-card">
 
+            <div className="card-header">
+              <div>
+                <h2>Top Products</h2>
+                <p>Highest-performing products by total sales</p>
+              </div>
 
-        <div className="analytics-result">
+              <Package size={20} />
+            </div>
 
-          {!analyticsResult && !loading && (
+            <div className="analytics-table">
 
-            <div className="empty-state">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Product</th>
+                    <th>Total Sales</th>
+                  </tr>
+                </thead>
 
-              Ask an analytics question above
-              to receive an AI-powered analysis.
+                <tbody>
+                  {products.map((product, index) => (
+                    <tr key={product.item_id}>
+                      <td>{index + 1}</td>
+                      <td>{product.item_id}</td>
+                      <td>
+                        {Number(
+                          product.total_sales
+                        ).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
             </div>
 
-          )}
-
-
-          {loading && (
-
-            <div className="loading-state">
-
-              Analyzing business data...
-
-            </div>
-
-          )}
-
-
-          {analyticsResult?.response && (
-
-            <div className="result-content">
-
-              <ReactMarkdown>
-
-                {analyticsResult.response}
-
-              </ReactMarkdown>
-
-            </div>
-
-          )}
-
-        </div>
-
-      </div>
+          </div>
+        </>
+      )}
 
     </div>
-
   );
-
 }
-
 
 export default Analytics;

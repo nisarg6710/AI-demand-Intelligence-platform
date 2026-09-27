@@ -1,296 +1,241 @@
 import {
-  Bot,
   BarChart3,
   TrendingUp,
   Package,
   Database,
   Brain,
   ArrowDown,
+  CheckCircle2,
 } from "lucide-react";
 
+const agents = [
+  {
+    name: "Analytics Agent",
+    description:
+      "Analyzes historical sales, stores, products, categories, departments, and business trends.",
+    capabilities: [
+      "Sales analytics",
+      "Store performance",
+      "Product analysis",
+      "Category analysis",
+    ],
+    icon: BarChart3,
+  },
+  {
+    name: "Forecast Agent",
+    description:
+      "Evaluates forecasting models and provides future demand intelligence.",
+    capabilities: [
+      "Model comparison",
+      "Forecast evaluation",
+      "Future demand forecasting",
+      "Prediction analysis",
+    ],
+    icon: TrendingUp,
+  },
+  {
+    name: "Inventory Agent",
+    description:
+      "Provides inventory-oriented intelligence using demand and sales information.",
+    capabilities: [
+      "Inventory analysis",
+      "Demand signals",
+      "Stock intelligence",
+      "Business recommendations",
+    ],
+    icon: Package,
+  },
+  {
+    name: "SQL Agent",
+    description:
+      "Translates business questions into database queries and retrieves structured information.",
+    capabilities: [
+      "Natural-language SQL",
+      "Database querying",
+      "Structured data retrieval",
+      "Query analysis",
+    ],
+    icon: Database,
+  },
+];
 
 function Agents() {
-  const agents = [
-    {
-      name: "Analytics Agent",
-      description:
-        "Analyzes historical sales data, trends, store performance, products, categories, and business KPIs.",
-      icon: BarChart3,
-      status: "Active",
-      responsibility: "Business Analytics",
-    },
-    {
-      name: "Forecast Agent",
-      description:
-        "Generates demand forecasts using the platform's forecasting models and interprets future demand patterns.",
-      icon: TrendingUp,
-      status: "Active",
-      responsibility: "Demand Forecasting",
-    },
-    {
-      name: "Inventory Agent",
-      description:
-        "Evaluates inventory conditions, stock risks, replenishment requirements, and fast- or slow-moving products.",
-      icon: Package,
-      status: "Active",
-      responsibility: "Inventory Intelligence",
-    },
-    {
-      name: "SQL Agent",
-      description:
-        "Handles database-oriented questions and generates or executes SQL queries against the analytics warehouse.",
-      icon: Database,
-      status: "Active",
-      responsibility: "Data Retrieval",
-    },
-  ];
-
-
   return (
     <div className="agents-page">
 
-      {/* =========================
-          Page Header
-      ========================= */}
-
+      {/* Header */}
       <div className="page-header">
-
         <div>
           <h1>AI Agents</h1>
-
           <p>
-            Multi-agent AI system for business intelligence and decision support.
+            Specialized intelligence agents powering the retail platform.
           </p>
         </div>
 
         <div className="dashboard-status">
-
           <span className="status-dot"></span>
-
           Multi-Agent System
-
         </div>
-
       </div>
 
-
-      {/* =========================
-          Architecture Overview
-      ========================= */}
-
-      <div className="dashboard-card">
+      {/* Architecture */}
+      <div className="dashboard-card agent-architecture">
 
         <div className="card-header">
-
           <div>
-            <h2>Agent Architecture</h2>
-
+            <h2>Multi-Agent Architecture</h2>
             <p>
-              Specialized AI agents collaborate to answer business questions.
+              Business questions are routed to specialized intelligence agents.
             </p>
           </div>
 
           <Brain size={20} />
-
         </div>
-
 
         <div className="agent-flow">
 
-          {/* Router */}
-
-          <div className="agent-flow-node">
-
-            <div className="agent-flow-icon">
-              <Bot size={22} />
-            </div>
-
-            <div>
-              <strong>Task Router</strong>
-
-              <span>
-                Understands the question and selects the required agents.
-              </span>
-            </div>
-
+          <div className="agent-flow-node router-node">
+            <Brain size={22} />
+            <strong>Query Router</strong>
+            <span>Understands the business question</span>
           </div>
 
+          <ArrowDown className="agent-flow-arrow" size={22} />
 
-          <div className="agent-flow-arrow">
-            <ArrowDown size={20} />
-          </div>
-
-
-          {/* Specialist Agents */}
-
-          <div className="agent-flow-grid">
+          <div className="agent-flow-specialists">
 
             {agents.map((agent) => {
-
               const Icon = agent.icon;
 
               return (
                 <div
-                  className="agent-card"
+                  className="agent-flow-node"
                   key={agent.name}
                 >
-
-                  <div className="agent-card-top">
-
-                    <div className="agent-icon">
-                      <Icon size={22} />
-                    </div>
-
-                    <span className="agent-status">
-                      <span className="status-dot"></span>
-                      {agent.status}
-                    </span>
-
-                  </div>
-
-
-                  <h3>
-                    {agent.name}
-                  </h3>
-
-
-                  <p>
-                    {agent.description}
-                  </p>
-
-
-                  <div className="agent-responsibility">
-                    {agent.responsibility}
-                  </div>
-
+                  <Icon size={20} />
+                  <strong>{agent.name}</strong>
+                  <span>Specialized analysis</span>
                 </div>
               );
             })}
 
           </div>
 
+          <ArrowDown className="agent-flow-arrow" size={22} />
 
-          <div className="agent-flow-arrow">
-            <ArrowDown size={20} />
-          </div>
-
-
-          {/* Executive Agent */}
-
-          <div className="agent-flow-node executive-agent">
-
-            <div className="agent-flow-icon">
-              <Brain size={22} />
-            </div>
-
-            <div>
-              <strong>Executive Agent</strong>
-
-              <span>
-                Combines specialist findings into a unified executive-level
-                business report.
-              </span>
-            </div>
-
+          <div className="agent-flow-node executive-node">
+            <Brain size={22} />
+            <strong>Executive Response</strong>
+            <span>Combines intelligence into a business response</span>
           </div>
 
         </div>
 
       </div>
 
+      {/* Agents */}
+      <div className="agents-grid">
 
-      {/* =========================
-          System Explanation
-      ========================= */}
+        {agents.map((agent) => {
+          const Icon = agent.icon;
 
-      <div className="dashboard-card">
+          return (
+            <div
+              className="dashboard-card agent-card"
+              key={agent.name}
+            >
+
+              <div className="agent-card-icon">
+                <Icon size={24} />
+              </div>
+
+              <div className="agent-card-content">
+
+                <div className="agent-card-title">
+                  <div>
+                    <h2>{agent.name}</h2>
+
+                    <div className="agent-status">
+                      <span className="status-dot"></span>
+                      Available
+                    </div>
+                  </div>
+                </div>
+
+                <p className="agent-description">
+                  {agent.description}
+                </p>
+
+                <div className="agent-capabilities">
+
+                  <h3>Capabilities</h3>
+
+                  {agent.capabilities.map((capability) => (
+                    <div
+                      className="agent-capability"
+                      key={capability}
+                    >
+                      <CheckCircle2 size={15} />
+                      <span>{capability}</span>
+                    </div>
+                  ))}
+
+                </div>
+
+              </div>
+
+            </div>
+          );
+        })}
+
+      </div>
+
+      {/* Workflow */}
+      <div className="dashboard-card agent-workflow">
 
         <div className="card-header">
-
           <div>
             <h2>How the System Works</h2>
-
             <p>
-              From a natural-language question to an actionable business insight.
+              End-to-end flow for natural-language business intelligence.
             </p>
           </div>
 
-          <Bot size={20} />
-
+          <Brain size={20} />
         </div>
 
+        <div className="workflow-grid">
 
-        <div className="agent-process">
-
-          <div className="process-step">
-
-            <div className="process-number">
-              1
-            </div>
-
-            <div>
-              <h3>User Question</h3>
-
-              <p>
-                A user asks a natural-language question about sales,
-                forecasting, inventory, or the business.
-              </p>
-            </div>
-
+          <div className="workflow-step">
+            <span>01</span>
+            <h3>Ask</h3>
+            <p>
+              A user submits a natural-language business question.
+            </p>
           </div>
 
-
-          <div className="process-step">
-
-            <div className="process-number">
-              2
-            </div>
-
-            <div>
-              <h3>Task Routing</h3>
-
-              <p>
-                The Task Router identifies which specialist agents are
-                relevant to the question.
-              </p>
-            </div>
-
+          <div className="workflow-step">
+            <span>02</span>
+            <h3>Route</h3>
+            <p>
+              The query router identifies the appropriate specialist agent.
+            </p>
           </div>
 
-
-          <div className="process-step">
-
-            <div className="process-number">
-              3
-            </div>
-
-            <div>
-              <h3>Specialist Analysis</h3>
-
-              <p>
-                Selected agents query the appropriate data or forecasting
-                services and generate domain-specific findings.
-              </p>
-            </div>
-
+          <div className="workflow-step">
+            <span>03</span>
+            <h3>Analyze</h3>
+            <p>
+              The selected agent retrieves and analyzes the required data.
+            </p>
           </div>
 
-
-          <div className="process-step">
-
-            <div className="process-number">
-              4
-            </div>
-
-            <div>
-              <h3>Executive Synthesis</h3>
-
-              <p>
-                When multiple agents are involved, the Executive Agent
-                combines their findings into a unified business response.
-              </p>
-            </div>
-
+          <div className="workflow-step">
+            <span>04</span>
+            <h3>Respond</h3>
+            <p>
+              The system produces a business-oriented natural-language response.
+            </p>
           </div>
 
         </div>
@@ -300,6 +245,5 @@ function Agents() {
     </div>
   );
 }
-
 
 export default Agents;

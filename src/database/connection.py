@@ -8,10 +8,11 @@ class DatabaseConnection:
     @staticmethod
     def connect():
 
-        db = Settings.database["database"]
+        db = Settings.database
 
         return mysql.connector.connect(
             host=db["host"],
+            port=db["port"],
             user=db["user"],
             password=db["password"],
             database=db["database"]

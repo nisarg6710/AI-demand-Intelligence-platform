@@ -1,13 +1,14 @@
 import { useState } from "react";
 import {
   TrendingUp,
+  Brain,
   Send,
-  CheckCircle2,
+  RefreshCw,
+  BarChart3,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
 import { getForecast } from "../services/api";
-
 
 function Forecasting() {
   const [question, setQuestion] = useState(
@@ -15,265 +16,282 @@ function Forecasting() {
   );
 
   const [result, setResult] = useState(null);
-
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState(null);
 
+  const exampleQuestions = [
+    "What is the best forecasting model?",
+    "Compare the forecasting models.",
+    "What is the future demand forecast for the next 12 months?",
+    "Which months have the highest forecasted demand?",
+  ];
 
-  const handleForecast = async () => {
-    if (!question.trim()) {
+  const runForecast = async (forecastQuestion = question) => {
+    if (!forecastQuestion.trim()) {
       return;
     }
 
-    try {
-      setLoading(true);
-      setError(null);
-      setResult(null);
+    setLoading(true);
+    setError(null);
 
-      const response = await getForecast(
-        question.trim()
-      );
+    try {
+      const response = await getForecast(forecastQuestion);
 
       setResult(response);
-
     } catch (err) {
-      console.error("Forecasting error:", err);
+      console.error("Forecast request failed:", err);
 
       setError(
-        "Unable to generate the forecast analysis. Please try again."
+        "Unable to retrieve forecasting intelligence. Please try again."
       );
-
+      setResult(null);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    runForecast();
+  };
+
+  const handleExample = (example) => {
+    setQuestion(example);
+    runForecast(example);
+  };
 
   return (
     <div className="forecasting-page">
 
-      {/* =========================
-          Page Header
-      ========================= */}
-
+      {/* Page Header */}
       <div className="page-header">
-
         <div>
-
           <h1>Forecasting</h1>
-
           <p>
-            Explore demand forecasting models and predictions.
+            Explore demand forecasts and evaluate forecasting models.
           </p>
-
         </div>
 
         <div className="dashboard-status">
-
           <span className="status-dot"></span>
-
           Forecast Intelligence
+        </div>
+      </div>
 
+      {/* Overview Cards */}
+      <div className="metrics-grid">
+
+        <div className="metric-card">
+          <div className="metric-card-header">
+            <span className="metric-title">
+              Forecasting Service
+            </span>
+
+            <div className="metric-icon">
+              <TrendingUp size={20} />
+            </div>
+          </div>
+
+          <div className="metric-value">
+            Online
+          </div>
+
+          <div className="metric-description">
+            Forecasting pipeline available
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-card-header">
+            <span className="metric-title">
+              Forecast Models
+            </span>
+
+            <div className="metric-icon">
+              <BarChart3 size={20} />
+            </div>
+          </div>
+
+          <div className="metric-value">
+            Multiple
+          </div>
+
+          <div className="metric-description">
+            Models evaluated by the forecasting pipeline
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-card-header">
+            <span className="metric-title">
+              AI Analysis
+            </span>
+
+            <div className="metric-icon">
+              <Brain size={20} />
+            </div>
+          </div>
+
+          <div className="metric-value">
+            Gemini
+          </div>
+
+          <div className="metric-description">
+            Natural-language forecasting intelligence
+          </div>
         </div>
 
       </div>
 
-
-      {/* =========================
-          Question Card
-      ========================= */}
-
-      <div className="dashboard-card forecasting-question-card">
+      {/* Forecast Query */}
+      <div className="dashboard-card forecast-query-card">
 
         <div className="card-header">
-
           <div>
-
-            <h2>
-              Ask a Forecasting Question
-            </h2>
-
+            <h2>Forecast Query</h2>
             <p>
-              Use natural language to explore demand forecasting.
+              Ask questions about forecasting models and future demand.
             </p>
-
           </div>
 
           <TrendingUp size={20} />
-
         </div>
 
-
-        <div className="forecast-input-area">
+        <form onSubmit={handleSubmit} className="forecast-form">
 
           <textarea
             value={question}
             onChange={(event) =>
               setQuestion(event.target.value)
             }
-            placeholder="e.g. Which forecasting model performs best?"
+            placeholder="Ask a forecasting question..."
             rows={4}
+            className="forecast-input"
           />
 
           <button
-            className="forecast-button"
-            onClick={handleForecast}
-            disabled={loading || !question.trim()}
+            type="submit"
+            className="primary-button"
+            disabled={loading}
           >
-
-            <Send size={17} />
-
-            {loading
-              ? "Analyzing..."
-              : "Analyze Forecast"}
-
+            {loading ? (
+              <>
+                <RefreshCw size={18} className="spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                Run Forecast
+              </>
+            )}
           </button>
+
+        </form>
+
+        <div className="example-questions">
+
+          <span className="example-label">
+            Example questions
+          </span>
+
+          <div className="example-question-list">
+
+            {exampleQuestions.map((example) => (
+              <button
+                key={example}
+                type="button"
+                className="example-question"
+                onClick={() => handleExample(example)}
+                disabled={loading}
+              >
+                {example}
+              </button>
+            ))}
+
+          </div>
 
         </div>
 
       </div>
 
-
-      {/* =========================
-          Error
-      ========================= */}
-
+      {/* Error */}
       {error && (
-
         <div className="error-banner">
-
           {error}
+        </div>
+      )}
+
+      {/* Forecast Result */}
+      <div className="dashboard-card forecast-result-card">
+
+        <div className="card-header">
+
+          <div>
+            <h2>Forecast Intelligence</h2>
+
+            <p>
+              AI-generated analysis from the forecasting pipeline.
+            </p>
+          </div>
+
+          <Brain size={20} />
 
         </div>
 
-      )}
+        {loading ? (
+          <div className="loading-state">
+            <RefreshCw size={20} className="spin" />
 
-
-      {/* =========================
-          Loading
-      ========================= */}
-
-      {loading && (
-
-        <div className="dashboard-card forecast-result-card">
-
-          <div className="forecast-loading">
-
-            <div className="forecast-loading-icon">
-              <TrendingUp size={20} />
-            </div>
-
-            <div>
-
-              <strong>
-                Generating forecasting analysis
-              </strong>
-
-              <p>
-                The forecasting agent is analyzing the request.
-              </p>
-
-            </div>
-
+            <span>
+              Running forecasting analysis...
+            </span>
           </div>
+        ) : result?.response ? (
+          <div className="forecast-result">
 
-        </div>
+            {result.selected_action && (
+              <div className="forecast-action">
 
-      )}
+                <span>
+                  Selected forecasting action
+                </span>
 
+                <strong>
+                  {result.selected_action}
+                </strong>
 
-      {/* =========================
-          Forecast Result
-      ========================= */}
+              </div>
+            )}
 
-      {result && !loading && (
-
-        <div className="dashboard-card forecast-result-card">
-
-          <div className="card-header">
-
-            <div>
-
-              <h2>
-                Forecast Assessment
-              </h2>
-
-              <p>
-                AI-powered forecasting analysis.
-              </p>
-
-            </div>
-
-            <CheckCircle2
-              size={20}
-              className="forecast-success-icon"
-            />
-
-          </div>
-
-
-          {/* =========================
-              Request Summary
-          ========================= */}
-
-          <div className="forecast-request-summary">
-
-            <div className="forecast-result-label">
-              Question
-            </div>
-
-            <div className="forecast-question">
-              {result.question || question}
-            </div>
-
-          </div>
-
-
-          {/* =========================
-              Selected Action
-          ========================= */}
-
-          <div className="forecast-action">
-
-            <div className="forecast-result-label">
-              Selected Forecast Action
-            </div>
-
-            <div className="forecast-action-value">
-              {result.selected_action}
-            </div>
-
-          </div>
-
-
-          {/* =========================
-              AI Response
-          ========================= */}
-
-          <div className="forecast-response">
-
-            <div className="forecast-result-label">
-              AI Analysis
-            </div>
-
-            <div className="forecast-response-content">
-
+            <div className="markdown-content">
               <ReactMarkdown>
                 {result.response}
               </ReactMarkdown>
-
             </div>
 
           </div>
+        ) : (
+          <div className="empty-state">
 
-        </div>
+            <TrendingUp size={32} />
 
-      )}
+            <h3>
+              No forecast analysis yet
+            </h3>
+
+            <p>
+              Ask a forecasting question above to generate
+              demand intelligence.
+            </p>
+
+          </div>
+        )}
+
+      </div>
 
     </div>
   );
 }
-
 
 export default Forecasting;
