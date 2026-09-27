@@ -1,136 +1,231 @@
-📊 AI Demand Intelligence Platform
+# 📊 AI Demand Intelligence Platform
 
-An end-to-end AI-powered retail demand intelligence platform that transforms large-scale sales data into forecasting insights, business analytics, and natural-language decision support.
+An end-to-end **AI-powered retail demand intelligence platform** that transforms large-scale retail sales data into forecasting insights, business analytics, and natural-language decision support.
 
-The AI Demand Intelligence Platform combines data engineering, time-series forecasting, machine learning, generative AI, RAG, multi-agent systems, and a React dashboard into a single application.
+The platform combines:
 
-Instead of requiring a business user to work directly with SQL queries, forecasting models, notebooks, or analytical dashboards, the platform provides a natural-language interface for interacting with business data and AI capabilities.
+- Large-scale data engineering
+- MySQL data warehousing
+- Business analytics
+- Classical, deep-learning, and transformer forecasting
+- Generative AI
+- Retrieval-Augmented Generation (RAG)
+- Multi-agent AI
+- FastAPI
+- React
+- Natural-language business intelligence
 
-🎯 What Problem Does This Solve?
+The goal is to provide a unified interface where users can interact with complex retail data and forecasting systems without needing to directly write SQL queries, understand model implementations, or navigate multiple disconnected analytical tools.
 
-Retail organizations generate large amounts of sales and operational data, but turning that data into useful decisions requires multiple disconnected systems.
+---
 
-A typical workflow might involve:
+# 🎯 Problem
 
-Raw Data
-   ↓
+Retail organizations generate large amounts of sales data, but converting that data into useful business decisions typically requires multiple disconnected systems.
+
+A traditional workflow looks like:
+
+```text
+Raw Retail Data
+      ↓
 ETL Pipeline
-   ↓
-Database
-   ↓
+      ↓
+Data Warehouse
+      ↓
 SQL / Analytics
-   ↓
+      ↓
 Forecasting Models
-   ↓
+      ↓
 Reports
-
-This creates a usability gap.
 
 A business user may want to ask:
 
 Which stores are performing best?
+
 What is the monthly sales trend?
-Which products are selling fastest?
-What is the best forecasting model?
-What are the biggest business risks?
-Give me an executive summary of the current situation.
 
-The user should not need to know SQL, machine-learning implementation details, or database structure to obtain these answers.
+Which products are performing best?
 
-The goal of this project is therefore:
+What does the demand forecast look like?
 
-Build a unified, data-grounded intelligence platform that allows business users to interact with retail data, forecasting models, analytics, and domain knowledge through natural language.
+Which forecasting model performs best?
 
-💡 What Is the Solution?
+What are the important business insights?
 
-The platform creates a complete pipeline:
+Give me an executive summary.
 
-Retail Data
-     ↓
+
+Project Goal
+
+Build a unified, data-grounded intelligence platform that allows business users to interact with:
+
+Retail data
+Analytics
+Forecasting models
+Business knowledge
+AI agents
+
+through a natural-language interface.
+
+💡 Solution
+
+The platform integrates the complete decision-making pipeline:
+
+Retail Dataset
+      ↓
 ETL Pipeline
-     ↓
+      ↓
 MySQL Data Warehouse
-     ↓
+      ↓
 Analytics + Forecasting
-     ↓
+      ↓
 AI / RAG
-     ↓
+      ↓
 Multi-Agent System
-     ↓
+      ↓
 FastAPI
-     ↓
+      ↓
 React Dashboard
 
-The important design principle is that LLMs are not treated as the source of numerical truth.
+A key design principle is that the LLM is not treated as the source of numerical truth.
 
-Instead:
+Instead, the system follows:
 
 User Question
-     ↓
-Task Router
-     ↓
+      ↓
+Query Router
+      ↓
 Specialized Agent
-     ↓
+      ↓
 Deterministic Tool
-     ↓
-Database / Model / Knowledge Base
-     ↓
+      ↓
+Database / Forecasting Model / Knowledge Base
+      ↓
 Real Results
-     ↓
+      ↓
 LLM Interpretation
-     ↓
+      ↓
 Business Answer
 
-This allows the system to combine the flexibility of natural-language AI with the reliability of structured data and deterministic tools.
+This allows the platform to combine the flexibility of natural-language AI with the reliability of structured data and deterministic computation.
 
-🚀 What Can the Platform Do?
-📦 Data Engineering
-Process the M5 retail dataset containing 58M+ sales records
-Validate and transform raw data
-Perform chunk-based ETL
-Load structured data into MySQL
-Maintain a centralized data warehouse
-📊 Business Analytics
+🚀 Key Capabilities
+📦 1. Data Engineering
 
-The analytics layer provides insights into:
+The platform processes the M5 Forecasting – Accuracy Dataset, containing more than 58 million historical sales records after transformation.
 
-Sales trends
-Monthly sales
+The ETL pipeline performs:
+
+Raw data ingestion
+Data validation
+Data cleaning
+Wide-to-long transformation
+Feature preparation
+Chunk-based processing
+Relational data loading
+MySQL warehouse population
+
+The large sales dataset is processed in chunks rather than attempting to load the complete dataset into memory at once.
+
+🗄️ 2. MySQL Data Warehouse
+
+Processed retail data is stored in a structured MySQL data warehouse.
+
+The warehouse contains:
+
+Dimension Tables
+calendar_dim
+item_dim
+store_dim
+Fact Tables
+sales_fact
+price_fact
+Analytical Tables
+analytics_monthly_sales
+analytics_store_performance
+analytics_category_performance
+analytics_department_performance
+analytics_product_performance
+analytics_weekday_sales
+analytics_sales_summary
+analytics_sales_distribution
+analytics_price_summary
+
+The database provides a centralized source for:
+
+Analytics
+Forecasting
+SQL queries
+AI tools
+Business intelligence
+📊 3. Business Analytics
+
+The analytics layer provides deterministic business insights directly from the MySQL warehouse.
+
+Current analytical capabilities include:
+
+Overall sales summary
+Monthly sales trends
 Store performance
 Product performance
-Categories and departments
-Business KPIs
-Historical demand
-📈 Demand Forecasting
+Category performance
+Department performance
+Weekday sales patterns
+Price statistics
+Sales distributions
 
-The forecasting framework supports multiple approaches, including:
+These results are exposed through FastAPI endpoints and visualized through the React frontend.
 
-Classical time-series models
-Deep-learning models
-Transformer-based forecasting models
+📈 4. Demand Forecasting
 
-Models can be evaluated and compared through a common forecasting workflow.
+The forecasting framework provides a common workflow for evaluating multiple forecasting approaches.
 
-🤖 Generative AI
+The project includes:
 
-LLMs are used for:
+Classical Forecasting
+Statistical time-series approaches
+Baseline forecasting
+Model evaluation
+Deep Learning
+Neural-network based forecasting approaches
+Transformer Forecasting
+Transformer-based time-series models
 
+Models are evaluated using a common forecasting workflow so that their performance can be compared using consistent evaluation procedures.
+
+The forecasting system also supports generating future demand forecasts through the application.
+
+🤖 5. Generative AI
+
+Generative AI is used as an interpretation and reasoning layer rather than as the source of raw numerical data.
+
+LLM functionality supports:
+
+Natural-language business questions
 Forecast interpretation
 Business explanations
-Natural-language interaction
+Cross-domain reasoning
+Executive summaries
 Report generation
-Agent reasoning
-📚 Retrieval-Augmented Generation
+Agent orchestration
 
-The RAG subsystem combines:
+The current implementation uses Google Gemini.
+
+📚 6. Retrieval-Augmented Generation
+
+The platform includes a RAG subsystem for incorporating business knowledge that may not exist inside the structured sales database.
+
+The pipeline follows:
 
 Business Documents
+       ↓
+Document Loading
        ↓
 Chunking
        ↓
 Embeddings
        ↓
-FAISS
+FAISS Vector Store
        ↓
 Semantic Retrieval
        ↓
@@ -140,11 +235,19 @@ LLM
        ↓
 Grounded Response
 
-This allows the system to incorporate information that is not contained in the structured sales database.
+RAG allows the system to combine:
 
-🧠 Multi-Agent Intelligence
+Structured Data
+      +
+Business Knowledge
+      +
+LLM Reasoning
 
-The platform contains specialized agents for different business responsibilities:
+rather than relying exclusively on the language model's internal knowledge.
+
+🧠 7. Multi-Agent AI
+
+The platform uses specialized agents for different business responsibilities.
 
 Agent	Responsibility
 Forecast Agent	Forecasting models and demand predictions
@@ -153,63 +256,88 @@ Inventory Agent	Inventory and replenishment intelligence
 SQL Agent	Database and SQL-oriented questions
 Executive Agent	Cross-domain business synthesis
 
-A Task Router determines which agent should handle a user's question.
+A query router determines which agent or agents should handle a question.
 
 For example:
 
-"What is the best forecasting model?"
-              ↓
-       Forecast Agent
-"Which stores are performing best?"
-              ↓
-       Analytics Agent
+"What is the monthly sales trend?"
+                ↓
+        Analytics Agent
+"What does future demand look like?"
+                ↓
+         Forecast Agent
 "Which products should we prioritize?"
-              ↓
-       Inventory Agent
+                ↓
+         Inventory Agent
 
-For broader questions, multiple agents can contribute and the Executive Agent synthesizes their findings.
+For broader questions, multiple agents can contribute and the Executive Agent can synthesize their findings into a single response.
 
 🏗️ System Architecture
 
-At a high level:
+The high-level architecture is:
 
-                    User
-                     │
-                     ▼
-             React Dashboard
-                     │
-                     ▼
-                FastAPI API
-                     │
-                     ▼
-              Query Engine
-                     │
-                     ▼
-               Task Router
-                     │
-          ┌──────────┼──────────┐
-          ▼          ▼          ▼
-      Forecast   Analytics   Inventory
-       Agent       Agent       Agent
-          │          │          │
-          ▼          ▼          ▼
-       Models      MySQL      MySQL
-          │          │          │
-          └──────────┼──────────┘
-                     ▼
-               Real Results
-                     │
-                     ▼
-             Executive Agent
-                     │
-                     ▼
-              Business Answer
+                         ┌──────────────────┐
+                         │       User       │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │ React Frontend   │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │   FastAPI API    │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │  Query Engine    │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │   Task Router    │
+                         └────────┬─────────┘
+                                  │
+             ┌────────────────────┼────────────────────┐
+             │                    │                    │
+             ▼                    ▼                    ▼
+      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+      │  Forecast   │      │  Analytics  │      │  Inventory  │
+      │    Agent    │      │    Agent    │      │    Agent    │
+      └──────┬──────┘      └──────┬──────┘      └──────┬──────┘
+             │                    │                    │
+             ▼                    ▼                    ▼
+      ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+      │ Forecasting │      │   MySQL     │      │    MySQL    │
+      │   Models    │      │  Warehouse  │      │  Warehouse  │
+      └──────┬──────┘      └──────┬──────┘      └──────┬──────┘
+             │                    │                    │
+             └────────────────────┼────────────────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │   Real Results   │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │ Executive Agent │
+                         └────────┬─────────┘
+                                  │
+                                  ▼
+                         ┌──────────────────┐
+                         │ Business Answer  │
+                         └──────────────────┘
 
-The system separates:
+The architecture separates:
 
-Data access
+Data ingestion
+Data storage
 Analytics
 Forecasting
+Deterministic tools
 AI reasoning
 Agent orchestration
 API services
@@ -217,11 +345,98 @@ User interface
 
 This makes individual components easier to test, replace, and extend.
 
-🗄️ Data & Database
+🖥️ React Application
 
-The project uses the M5 Forecasting – Accuracy Dataset as its primary retail dataset.
+The frontend is built using:
 
-The dataset contains information about:
+React
+Vite
+React Router
+Axios
+Recharts
+React Markdown
+Lucide React
+
+The application currently provides:
+
+Dashboard
+
+Provides an overview of:
+
+Total sales
+Sales records
+Average sale
+Store performance
+Category performance
+Monthly sales trends
+Forecast overview
+Quick actions
+Forecasting
+
+Provides:
+
+Forecasting service status
+Forecasting queries
+Forecast results
+AI-generated forecast interpretation
+Example forecasting questions
+Analytics
+
+Provides interactive visualizations for:
+
+Monthly sales
+Store performance
+Category performance
+Department performance
+Weekday sales
+Top products
+AI Chat
+
+Provides a natural-language interface for interacting with the intelligence platform.
+
+Users can ask business questions without directly writing SQL.
+
+Agents
+
+Provides a visual explanation of the multi-agent architecture, including:
+
+Query Router
+Analytics Agent
+Forecast Agent
+Inventory Agent
+SQL Agent
+Executive Response
+🌐 FastAPI Backend
+
+The backend exposes the intelligence platform through a REST API.
+
+Core Endpoints
+Method	Endpoint	Purpose
+GET	/health	Service health check
+POST	/chat	Natural-language business questions
+POST	/forecast	Forecasting intelligence
+POST	/analytics	AI-assisted analytics
+POST	/report	Executive reporting
+Deterministic Analytics Endpoints
+Method	Endpoint	Purpose
+GET	/analytics/summary	Overall sales summary
+GET	/analytics/monthly-sales	Monthly sales
+GET	/analytics/top-stores	Store performance
+GET	/analytics/category-performance	Category performance
+GET	/analytics/department-performance	Department performance
+GET	/analytics/top-products	Top product performance
+GET	/analytics/weekday-sales	Weekday sales patterns
+
+Interactive API documentation is available through:
+
+http://127.0.0.1:8000/docs
+📊 Dataset
+
+The project uses the:
+
+M5 Forecasting – Accuracy Dataset
+
+The dataset contains:
 
 Products
 Stores
@@ -229,19 +444,15 @@ Departments
 Categories
 Historical sales
 Calendar information
-Prices
+Product prices
 
-The processed data is stored in a MySQL data warehouse.
+The processed warehouse contains more than:
 
-The database contains structured dimensions and fact tables used by:
+58,000,000+
 
-Analytics
-Forecasting
-SQL queries
-Inventory intelligence
-AI agents
+sales records.
 
-The raw M5 dataset is not included in the repository because of its size.
+The raw dataset is not included in the repository because of its size.
 
 Required files:
 
@@ -249,13 +460,10 @@ sales_train_validation.csv
 calendar.csv
 sell_prices.csv
 
-Place them in:
+Place them inside:
 
 data/raw/
 📂 Project Structure
-
-The repository is organized around the different stages of the platform:
-
 AI-demand-intelligence-platform/
 │
 ├── configs/
@@ -307,6 +515,7 @@ AI-demand-intelligence-platform/
 │   │
 │   ├── analytics/
 │   ├── api/
+│   ├── config/
 │   ├── database/
 │   ├── etl/
 │   ├── forecasting/
@@ -324,15 +533,18 @@ AI-demand-intelligence-platform/
 │   ├── tools/
 │   └── transformers/
 │
-├── Dockerfile
-├── .dockerignore
+├── .env
+├── .gitignore
 ├── requirements.txt
 ├── README.md
-└── .gitignore
-Important directories
+└── ...
+
+Local credentials and API keys are stored outside version control and should never be committed.
+
+📁 Important Directories
 Directory	Purpose
-src/etl/	Data extraction, validation and loading
-src/database/	MySQL connection and schema
+src/etl/	Data extraction, transformation and loading
+src/database/	MySQL connection and database utilities
 src/analytics/	Business analytics services
 src/forecasting/	Forecasting models and evaluation
 src/ai/agents/	Specialized AI agents
@@ -342,13 +554,13 @@ src/ai/rag/	Retrieval-Augmented Generation
 src/api/	FastAPI application and routes
 frontend/	React business intelligence interface
 tests/	Automated tests
-docs/	Detailed milestone documentation
-artifacts/	Models, reports, embeddings and experiment outputs
+docs/	Milestone documentation
+artifacts/	Models, embeddings, reports and experiment outputs
 💻 Requirements
 
 Before running the project locally, install:
 
-Requirement	Recommended
+Requirement	Version
 Python	3.12.x
 MySQL	8.0+
 Node.js	20+
@@ -359,39 +571,57 @@ You will also need:
 
 The M5 dataset
 A running MySQL server
-A Google Gemini API key for LLM-powered functionality
+A Google Gemini API key for AI functionality
 
-Python dependencies are provided in:
+Python dependencies are provided through:
 
 requirements.txt
 
-Frontend dependencies are provided in:
+Frontend dependencies are provided through:
 
 frontend/package.json
 ⚙️ Local Setup
-1. Clone the repository
+1. Clone the Repository
 git clone <repository-url>
 cd AI-demand-intelligence-platform
-2. Create the Python environment
-Windows
+2. Create the Python Environment
+Option A — Conda
+conda create -p venv python=3.12 -y
+conda activate ./venv
+Option B — Python Virtual Environment
+
+Windows:
+
 python -m venv venv
 venv\Scripts\activate
-Linux / macOS
-python -m venv venv
+
+Linux / macOS:
+
+python3 -m venv venv
 source venv/bin/activate
-3. Install Python dependencies
+3. Install Python Dependencies
 pip install -r requirements.txt
+
+Verify the environment:
+
+pip check
+
+The project should report:
+
+No broken requirements found.
 🗄️ 4. Configure MySQL
 
-Create the MySQL database using:
+Install and start MySQL 8.0+.
 
-src/database/schema.sql
+Create the database:
 
-The project expects a database configuration at:
+CREATE DATABASE demand_intelligence;
+
+The project expects database configuration through:
 
 configs/database.yaml
 
-A safe template is provided as:
+A safe template is provided at:
 
 configs/database.example.yaml
 
@@ -399,6 +629,7 @@ Example:
 
 database:
   host: localhost
+  port: 3306
   user: your_username
   password: your_password
   database: demand_intelligence
@@ -407,7 +638,9 @@ Do not commit real database credentials.
 
 📊 5. Add the M5 Dataset
 
-Download the M5 Forecasting – Accuracy dataset and place:
+Download the M5 Forecasting – Accuracy dataset.
+
+Place:
 
 sales_train_validation.csv
 calendar.csv
@@ -417,32 +650,63 @@ inside:
 
 data/raw/
 
-Then run the ETL pipeline described in:
+The ETL workflow is documented in:
 
 docs/milestone_01_etl/
+
+The resulting warehouse contains the processed retail data used by the rest of the application.
+
+The complete raw dataset and populated MySQL database are not included in the Git repository because of their size.
+
 🔐 6. Configure Gemini
 
-LLM-powered functionality requires a Gemini API key.
+AI-powered functionality requires a Google Gemini API key.
 
-Configure the local LLM settings in:
+Configure the local environment according to the project's configuration files.
 
-configs/llm.yaml
+For example, local environment variables can include:
 
-Keep credentials out of Git.
+GEMINI_API_KEY=your_api_key
+LLM_PROVIDER=gemini
+LLM_MODEL=models/gemini-3.1-flash-lite
 
+Database environment variables can also be configured locally:
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=your_username
+DB_PASSWORD=your_password
+DB_NAME=demand_intelligence
+
+Keep .env out of Git.
+
+Never commit:
+
+Gemini API keys
+Database passwords
+Authentication secrets
+Cloud credentials
 🌐 7. Start the Backend
 
-Activate the virtual environment and run:
+Activate the Python environment and run:
 
-uvicorn src.api.main:app --reload
+python -m uvicorn src.api.main:app --reload --host 127.0.0.1 --port 8000
 
 The backend will be available at:
 
 http://127.0.0.1:8000
 
-Swagger documentation:
+Health check:
+
+http://127.0.0.1:8000/health
+
+Swagger API documentation:
 
 http://127.0.0.1:8000/docs
+
+OpenAPI specification:
+
+http://127.0.0.1:8000/openapi.json
 🖥️ 8. Start the React Frontend
 
 Open another terminal:
@@ -451,15 +715,15 @@ cd frontend
 npm install
 npm run dev
 
-The Vite development server will provide the frontend URL shown in the terminal.
+Vite will display the local frontend URL in the terminal.
 
-The frontend communicates with the FastAPI backend to provide:
+The frontend communicates with the FastAPI backend and provides:
 
 Dashboard
 Forecasting
 Analytics
 AI Chat
-Agent architecture
+Agents
 📦 Production Frontend Build
 
 To create a production build:
@@ -467,18 +731,30 @@ To create a production build:
 cd frontend
 npm run build
 
-To locally preview the production build:
+To preview the production build locally:
 
 npm run preview
+
+The production build is generated in:
+
+frontend/dist/
 🧪 Testing
 
-The project includes automated tests across the major system components.
+The project contains automated tests covering major components of the platform.
 
-For the API integration tests:
+Run API tests:
 
 python -m pytest tests/api -v
 
-The API suite validates:
+Run the complete test suite:
+
+python -m pytest -v
+
+For debugging:
+
+python -m pytest -x -vv
+
+The API tests cover the major application interfaces, including:
 
 /health
 /chat
@@ -486,38 +762,13 @@ The API suite validates:
 /analytics
 /report
 
-The complete test suite can be executed with:
+Some forecasting-related tests can take longer because they execute real forecasting workflows.
 
-python -m pytest -v
-
-Use:
-
-python -m pytest -x -vv
-
-when debugging failures.
-
-Note: Some forecasting/report tests can take significantly longer because they execute real forecasting workflows. Warnings from third-party libraries do not necessarily indicate test failures.
-
-🔌 API
-
-The FastAPI backend currently exposes:
-
-Endpoint	Purpose
-GET /health	Service health check
-POST /chat	General natural-language business questions
-POST /forecast	Forecasting intelligence
-POST /analytics	Business analytics
-POST /report	Executive reporting
-
-Interactive API documentation is available through:
-
-/ docs
-
-when the backend is running.
+Third-party library warnings do not necessarily indicate test failures.
 
 🔒 Security
 
-The repository intentionally does not store production credentials.
+The repository intentionally does not contain production credentials.
 
 Never commit:
 
@@ -525,15 +776,15 @@ Database passwords
 Gemini API keys
 Cloud credentials
 Authentication secrets
-Other sensitive configuration
+Private configuration
 
-Local configuration files should remain excluded through .gitignore.
+Use local configuration files and environment variables instead.
 
-Template configuration files such as:
+Example configuration files such as:
 
 configs/database.example.yaml
 
-can safely be committed.
+can safely be committed because they contain placeholders rather than real credentials.
 
 🧭 Development Approach
 
@@ -565,27 +816,47 @@ Each major stage has its own documentation under:
 
 docs/
 
-The root README intentionally provides the high-level picture and setup instructions, while the milestone documentation contains the implementation details.
+The root README intentionally focuses on:
+
+Project overview
+Architecture
+Capabilities
+Setup
+Usage
+Current status
+
+while the milestone documentation contains detailed implementation decisions and technical explanations.
 
 📚 Milestone Documentation
 
-Detailed technical documentation is available for each stage:
+Detailed documentation is available for the individual development stages:
 
 docs/business_case/
+
 docs/milestone_01_etl/
+
 docs/milestone_02_eda/
+
 docs/milestone_03_forecasting/
+
 docs/milestone_04_deep_learning/
+
 docs/milestone_05_transformers/
+
 docs/milestone_06_llm/
+
 docs/milestone_07_rag/
+
 docs/milestone_09_multi_agent/
+
 docs/milestone_10_fastapi/
+
 docs/milestone_11_react/
 📌 Current Status
 Component	Status
 Business Understanding	✅ Complete
-ETL & MySQL Warehouse	✅ Complete
+ETL Pipeline	✅ Complete
+MySQL Data Warehouse	✅ Complete
 Exploratory Data Analysis	✅ Complete
 Classical Forecasting	✅ Complete
 Deep Learning Forecasting	✅ Complete
@@ -596,13 +867,17 @@ Multi-Agent AI	✅ Complete
 Query Engine	✅ Complete
 FastAPI Backend	✅ Complete
 React Frontend	✅ Complete
-API Integration Tests	✅ Passing
-Deployment / MLOps	🚧 Next Stage
+API Integration	✅ Complete
+Frontend Linting	✅ Passing
+Frontend Production Build	✅ Passing
+Docker	❌ Not Used
+Cloud Deployment	⬜ Future Work
+Production MLOps	⬜ Future Work
 🌟 Why This Project Matters
 
-The main value of this project is not simply combining many technologies.
+The primary value of this project is not simply the number of technologies used.
 
-The important part is the integration of the entire decision-making pipeline:
+The important part is the integration of the complete decision-making pipeline:
 
 Large-Scale Retail Data
           ↓
@@ -620,11 +895,9 @@ Large-Scale Retail Data
           ↓
     React Interface
           ↓
- Natural-Language Decisions
+ Natural-Language Interaction
 
-This transforms the project from a standalone forecasting experiment into a complete AI-enabled business intelligence system.
-
-The user interacts with the platform at the business level, while the underlying system handles:
+A user can interact with the platform at the business level while the underlying system handles:
 
 Data retrieval
 SQL
@@ -633,30 +906,59 @@ Forecasting
 Knowledge retrieval
 Agent selection
 Model interpretation
+Business reasoning
 Report generation
 
-The result is a system designed to make complex data-science capabilities more accessible, explainable, and actionable for business users.
+This turns the project from an isolated forecasting experiment into an integrated AI-enabled retail intelligence system.
 
-🗺️ Roadmap
+🛣️ Future Roadmap
 
-The core application is now complete through the React frontend.
+The core application is currently complete through the React frontend.
+
+Future development can focus on productionization and MLOps rather than additional application features.
 
 Completed
 ✅ Data Engineering
 ✅ MySQL Data Warehouse
-✅ Analytics
-✅ Forecasting
-✅ Deep Learning
-✅ Transformers
-✅ LLM
+✅ Business Analytics
+✅ Classical Forecasting
+✅ Deep Learning Forecasting
+✅ Transformer Forecasting
+✅ Generative AI
 ✅ RAG
 ✅ Multi-Agent AI
-✅ FastAPI
+✅ Query Engine
+✅ FastAPI Backend
 ✅ React Frontend
-Next
-⬜ Dockerized Deployment
-⬜ CI/CD
-⬜ MLflow / Experiment Tracking
-⬜ Monitoring
-⬜ Cloud Deployment
+✅ API Integration
+✅ Frontend Build
+Future Work
+⬜ MLflow Experiment Tracking
+⬜ CI/CD Pipeline
+⬜ Model Monitoring
+⬜ Data Quality Monitoring
 ⬜ Production MLOps
+⬜ Cloud Deployment
+⬜ Automated Model Retraining
+
+Dockerized deployment is intentionally not part of the project roadmap. The current application is designed to run natively using Python, MySQL, FastAPI, Node.js, and React.
+
+🏷️ Current Release
+
+The current completed application release is:
+
+v12.0.0
+
+This release represents the completion of the native application integration, including:
+
+Backend
+    +
+MySQL
+    +
+AI / RAG / Agents
+    +
+FastAPI
+    +
+React Frontend
+
+The project is maintained on the main branch.
