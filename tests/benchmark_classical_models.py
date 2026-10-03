@@ -1,3 +1,15 @@
+import os
+import sys
+
+# Change the notebook's active working directory to the project root
+if os.path.basename(os.getcwd()) == "notebooks":
+    os.chdir("..")
+
+# Ensure the root path is also in sys.path
+if os.getcwd() not in sys.path:
+    sys.path.append(os.getcwd())
+
+
 from src.forecasting.registry import ForecastRegistry
 from src.forecasting.pipeline import ForecastPipeline
 

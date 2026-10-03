@@ -1,5 +1,14 @@
-
 import os
+import sys
+
+# Change the notebook's active working directory to the project root
+if os.path.basename(os.getcwd()) == "notebooks":
+    os.chdir("..")
+
+# Ensure the root path is also in sys.path
+if os.getcwd() not in sys.path:
+    sys.path.append(os.getcwd())
+
 import pandas as pd
 from torch.utils.data import DataLoader
 
@@ -11,6 +20,7 @@ from src.forecasting.deep_learning.transformers.patchtst import PatchTST
 from src.forecasting.deep_learning.transformers.informer import Informer
 from src.forecasting.deep_learning.transformers.tft import TemporalFusionTransformer
 
+from src.mlops.mlflow_tracking import MLflowTracker
 
 
 def main():
@@ -49,6 +59,11 @@ def main():
 
     results = []
 
+    tracker = MLflowTracker(
+        experiment_name="AI-Demand-Intelligence-Forecasting"
+    )
+
+
     for name, model, checkpoint in models:
 
         evaluator = Evaluator(model)
@@ -58,6 +73,39 @@ def main():
             loader,
             scaler,
         )
+
+        metrics = evaluation["metrics"]
+
+        with tracker.start_run(
+            run_name=name
+        ):
+
+            tracker.log_params(
+                {
+                    "model_name": name,
+                    "model_family": "transformer",
+                    "checkpoint": checkpoint,
+                    "sequence_length": 30,
+                    "batch_size": 64,
+                }
+            )
+
+            tracker.log_metrics(
+                {
+                    "MAE": metrics["MAE"],
+                    "RMSE": metrics["RMSE"],
+                    "MAPE": metrics["MAPE"],
+                }
+            )
+
+            tracker.log_tags(
+                {
+                    "project": "AI Demand Intelligence Platform",
+                    "stage": "milestone_12",
+                    "model_family": "transformer",
+                    "model_name": name,
+                }
+            )
 
         results.append(
             {

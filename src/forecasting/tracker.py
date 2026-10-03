@@ -1,3 +1,5 @@
+import json
+
 from src.database.db_manager import DatabaseManager
 
 
@@ -19,12 +21,22 @@ class ExperimentTracker:
             train_time,
             predict_time
         )
-        VALUES (%s,%s,%s,%s,%s,%s,%s)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
+
+        parameters = experiment.parameters
+
+        if not isinstance(parameters, dict):
+            parameters = {}
+
+        parameters_json = json.dumps(
+            parameters,
+            default=str
+        )
 
         values = (
             experiment.model_name,
-            str(experiment.parameters),
+            parameters_json,
             experiment.mae,
             experiment.rmse,
             experiment.mape,

@@ -60,3 +60,13 @@ frontend/dist/
 .env.docker
 
 backup/
+
+# MLflow
+mlflow.db
+mlflow.db-shm
+mlflow.db-wal
+mlruns/
+mlartifacts/
+
+# MLflow generated artifacts
+artifacts/mlflow/
