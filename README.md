@@ -430,6 +430,92 @@ GET	/analytics/weekday-sales	Weekday sales patterns
 Interactive API documentation is available through:
 
 http://127.0.0.1:8000/docs
+
+## ⚙️ MLOps
+
+The platform includes an MLOps layer for forecasting experiment tracking
+and automated software validation.
+
+### MLflow Experiment Tracking
+
+MLflow is integrated into the forecasting pipeline to track forecasting
+experiments and their results.
+
+Tracked information includes:
+
+- Model parameters
+- MAE
+- RMSE
+- MAPE
+- Training time
+- Prediction time
+- Model metadata
+- Forecast visualization artifacts
+
+The forecasting pipeline records experiments in MLflow while the
+existing MySQL experiment tracking system continues to store application-level
+forecasting results.
+
+During local development, MLflow uses a SQLite tracking backend.
+
+### Continuous Integration
+
+GitHub Actions provides automated CI for the project.
+
+The CI workflow:
+
+- Installs Python dependencies
+- Runs backend tests
+- Validates MLflow tracking
+- Installs frontend dependencies
+- Runs ESLint
+- Builds the production React application
+
+Workflow:
+
+```text
+.github/workflows/ci.yml
+
+CI runs automatically on:
+
+Pushes to main
+Pull requests targeting main
+
+The CI pipeline validates both the backend and frontend before changes
+are considered ready for integration.
+
+### ML-OPS architecture:-
+
+Forecasting Pipeline
+        │
+        ▼
+     MLflow
+        │
+   ┌────┴────┐
+   │         │
+Params    Metrics
+   │         │
+   └────┬────┘
+        │
+        ▼
+   Artifacts
+        │
+        ▼
+   Git Repository
+        │
+        ▼
+ GitHub Actions
+        │
+   ┌────┴────┐
+   │         │
+Backend   Frontend
+Tests     Lint + Build
+   │         │
+   └────┬────┘
+        │
+        ▼
+    CI Result
+
 📊 Dataset
 
 The project uses the:
@@ -496,6 +582,8 @@ AI-demand-intelligence-platform/
 │   ├── milestone_09_multi_agent/
 │   ├── milestone_10_fastapi/
 │   └── milestone_11_react/
+│   ├── milestone_12_mlflow/
+│   └── milestone_13_ci_cd/
 │
 ├── frontend/
 │   ├── src/
@@ -522,12 +610,14 @@ AI-demand-intelligence-platform/
 │   │   ├── classical/
 │   │   ├── deep_learning/
 │   │   └── transformers/
+│   ├── mlops/
 │   └── utils/
 │
 ├── tests/
 │   ├── agents/
 │   ├── api/
 │   ├── forecasting/
+│   ├── mlops/
 │   ├── query/
 │   ├── rag/
 │   ├── tools/
@@ -563,7 +653,7 @@ Before running the project locally, install:
 Requirement	Version
 Python	3.12.x
 MySQL	8.0+
-Node.js	20+
+Node.js	22+
 npm	Included with Node.js
 Git	Latest stable version
 
@@ -812,6 +902,10 @@ FastAPI
         ↓
 React Frontend
 
+    ↓
+
+MLflow + CI/CD
+
 Each major stage has its own documentation under:
 
 docs/
@@ -819,13 +913,19 @@ docs/
 The root README intentionally focuses on:
 
 Project overview
+
 Architecture
+
 Capabilities
+
 Setup
+
 Usage
+
 Current status
 
-while the milestone documentation contains detailed implementation decisions and technical explanations.
+while the milestone documentation contains detailed implementation decisions
+and technical explanations.
 
 📚 Milestone Documentation
 
@@ -852,6 +952,11 @@ docs/milestone_09_multi_agent/
 docs/milestone_10_fastapi/
 
 docs/milestone_11_react/
+
+docs/milestone_12_mlflow/
+
+docs/milestone_13_ci_cd/
+
 📌 Current Status
 Component	Status
 Business Understanding	✅ Complete
@@ -870,6 +975,8 @@ React Frontend	✅ Complete
 API Integration	✅ Complete
 Frontend Linting	✅ Passing
 Frontend Production Build	✅ Passing
+MLflow Experiment Tracking     ✅ Complete
+CI/CD Pipeline                 ✅ Complete
 Docker	❌ Not Used
 Cloud Deployment	⬜ Future Work
 Production MLOps	⬜ Future Work
@@ -932,9 +1039,10 @@ Completed
 ✅ React Frontend
 ✅ API Integration
 ✅ Frontend Build
+✅ MLflow Experiment Tracking
+✅ CI/CD Pipeline
+
 Future Work
-⬜ MLflow Experiment Tracking
-⬜ CI/CD Pipeline
 ⬜ Model Monitoring
 ⬜ Data Quality Monitoring
 ⬜ Production MLOps
@@ -947,18 +1055,26 @@ Dockerized deployment is intentionally not part of the project roadmap. The curr
 
 The current completed application release is:
 
-v12.0.0
+v13.0.0
 
-This release represents the completion of the native application integration, including:
+This release represents the completion of the MLOps foundation, including:
 
-Backend
-    +
-MySQL
-    +
-AI / RAG / Agents
-    +
-FastAPI
-    +
-React Frontend
+MLflow Experiment Tracking
+
+        +
+
+GitHub Actions CI/CD
+
+        +
+
+Backend Test Automation
+
+        +
+
+Frontend Linting
+
+        +
+
+Frontend Production Build
 
 The project is maintained on the main branch.
