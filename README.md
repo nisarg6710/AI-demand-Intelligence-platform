@@ -431,10 +431,41 @@ Interactive API documentation is available through:
 
 http://127.0.0.1:8000/docs
 
-## ⚙️ MLOps
+## ⚙️ MLOps & Production Monitoring
 
-The platform includes an MLOps layer for forecasting experiment tracking
-and automated software validation.
+The platform includes an MLOps layer covering:
+
+- Forecasting experiment tracking
+- Automated software validation
+- Data quality monitoring
+- Model performance monitoring
+- Data drift monitoring
+- Unified monitoring reports
+
+### Production Monitoring
+
+The platform includes a monitoring layer for validating the health of the data and forecasting system.
+
+Monitoring covers:
+
+- Data quality
+- Missing values
+- Duplicate records
+- Invalid and negative values
+- Model performance
+- MAE
+- RMSE
+- MAPE
+- Data drift
+- Monitoring alerts
+
+A unified `MonitoringReporter` combines these checks into a single monitoring report.
+
+Monitoring reports can also be integrated with MLflow for experiment and operational tracking.
+
+Monitoring components are implemented under:
+
+src/monitoring/
 
 ### MLflow Experiment Tracking
 
@@ -493,15 +524,12 @@ Forecasting Pipeline
         │
    ┌────┴────┐
    │         │
-Params    Metrics
+ Params    Metrics
    │         │
    └────┬────┘
         │
         ▼
    Artifacts
-        │
-        ▼
-   Git Repository
         │
         ▼
  GitHub Actions
@@ -514,7 +542,17 @@ Tests     Lint + Build
    └────┬────┘
         │
         ▼
-    CI Result
+ Production Monitoring
+        │
+   ┌────┼────┐
+   │    │    │
+ Data  Model Drift
+Quality Perf.
+   │    │    │
+   └────┼────┘
+        │
+        ▼
+ Monitoring Report
 
 📊 Dataset
 
@@ -584,7 +622,9 @@ AI-demand-intelligence-platform/
 │   └── milestone_11_react/
 │   ├── milestone_12_mlflow/
 │   └── milestone_13_ci_cd/
-│
+│   ├── milestone_15_monitoring/
+│   ├── milestone_16_monitoring_integration/
+│   └── milestone_17_final_release/
 ├── frontend/
 │   ├── src/
 │   ├── public/
@@ -623,7 +663,6 @@ AI-demand-intelligence-platform/
 │   ├── tools/
 │   └── transformers/
 │
-├── .env
 ├── .gitignore
 ├── requirements.txt
 ├── README.md
@@ -828,17 +867,16 @@ npm run preview
 The production build is generated in:
 
 frontend/dist/
-🧪 Testing
+## 🧪 Testing
 
-The project contains automated tests covering major components of the platform.
+The project contains automated tests covering configuration, forecasting, MLOps, and production monitoring components.
 
-Run API tests:
+### Final Release Verification
 
-python -m pytest tests/api -v
+The lightweight release validation suite can be run with:
 
-Run the complete test suite:
-
-python -m pytest -v
+```bash
+python -m pytest tests/test_config_loader.py tests/test_moving_average.py tests/test_arima.py tests/mlops/test_mlflow_tracking.py tests/monitoring -v
 
 For debugging:
 
@@ -901,10 +939,12 @@ Multi-Agent AI
 FastAPI
         ↓
 React Frontend
-
-    ↓
-
+        ↓
 MLflow + CI/CD
+        ↓
+Production Monitoring
+        ↓
+Final Release
 
 Each major stage has its own documentation under:
 
@@ -957,29 +997,41 @@ docs/milestone_12_mlflow/
 
 docs/milestone_13_ci_cd/
 
+docs/milestone_15_monitoring/
+
+docs/milestone_16_monitoring_integration/
+
+docs/milestone_17_final_release/
+
 📌 Current Status
-Component	Status
-Business Understanding	✅ Complete
-ETL Pipeline	✅ Complete
-MySQL Data Warehouse	✅ Complete
-Exploratory Data Analysis	✅ Complete
-Classical Forecasting	✅ Complete
-Deep Learning Forecasting	✅ Complete
-Transformer Forecasting	✅ Complete
-LLM Integration	✅ Complete
-RAG	✅ Complete
-Multi-Agent AI	✅ Complete
-Query Engine	✅ Complete
-FastAPI Backend	✅ Complete
-React Frontend	✅ Complete
-API Integration	✅ Complete
-Frontend Linting	✅ Passing
-Frontend Production Build	✅ Passing
-MLflow Experiment Tracking     ✅ Complete
-CI/CD Pipeline                 ✅ Complete
-Docker	❌ Not Used
-Cloud Deployment	⬜ Future Work
-Production MLOps	⬜ Future Work
+
+| Component | Status |
+|---|---|
+| Business Understanding | ✅ Complete |
+| ETL Pipeline | ✅ Complete |
+| MySQL Data Warehouse | ✅ Complete |
+| Exploratory Data Analysis | ✅ Complete |
+| Classical Forecasting | ✅ Complete |
+| Deep Learning Forecasting | ✅ Complete |
+| Transformer Forecasting | ✅ Complete |
+| LLM Integration | ✅ Complete |
+| RAG | ✅ Complete |
+| Multi-Agent AI | ✅ Complete |
+| Query Engine | ✅ Complete |
+| FastAPI Backend | ✅ Complete |
+| React Frontend | ✅ Complete |
+| API Integration | ✅ Complete |
+| Frontend Linting | ✅ Passing |
+| Frontend Production Build | ✅ Passing |
+| MLflow Experiment Tracking | ✅ Complete |
+| CI/CD Pipeline | ✅ Complete |
+| Data Quality Monitoring | ✅ Complete |
+| Model Performance Monitoring | ✅ Complete |
+| Data Drift Monitoring | ✅ Complete |
+| Unified Monitoring Reports | ✅ Complete |
+| Docker | ❌ Not Used |
+| Cloud Deployment | ⬜ Future Work |
+| Automated Model Retraining | ⬜ Future Work |
 🌟 Why This Project Matters
 
 The primary value of this project is not simply the number of technologies used.
@@ -988,21 +1040,25 @@ The important part is the integration of the complete decision-making pipeline:
 
 Large-Scale Retail Data
           ↓
-      Data Engineering
+     Data Engineering
           ↓
      Data Warehouse
           ↓
- Analytics + Forecasting
+  Analytics + Forecasting
           ↓
-       AI + RAG
+        AI + RAG
           ↓
-    Multi-Agent System
+   Multi-Agent System
           ↓
       FastAPI API
           ↓
     React Interface
           ↓
  Natural-Language Interaction
+          ↓
+ Production Monitoring
+
+ Production monitoring adds a validation layer for data quality, model performance, and data drift, making the platform more suitable as an end-to-end production-oriented system rather than only a research prototype
 
 A user can interact with the platform at the business level while the underlying system handles:
 
@@ -1041,13 +1097,21 @@ Completed
 ✅ Frontend Build
 ✅ MLflow Experiment Tracking
 ✅ CI/CD Pipeline
+✅ Model Monitoring
+✅ Data Quality Monitoring
 
 Future Work
-⬜ Model Monitoring
-⬜ Data Quality Monitoring
-⬜ Production MLOps
+Future Work
+
 ⬜ Cloud Deployment
+
 ⬜ Automated Model Retraining
+
+⬜ Automated Model Promotion
+
+⬜ Continuous Production Retraining Pipeline
+
+⬜ Scalable Distributed Deployment
 
 Dockerized deployment is intentionally not part of the project roadmap. The current application is designed to run natively using Python, MySQL, FastAPI, Node.js, and React.
 
@@ -1055,26 +1119,25 @@ Dockerized deployment is intentionally not part of the project roadmap. The curr
 
 The current completed application release is:
 
-v13.0.0
+**v17.0.0**
 
-This release represents the completion of the MLOps foundation, including:
+This release represents the completion of the end-to-end AI Demand Intelligence Platform, including:
 
-MLflow Experiment Tracking
+- Large-scale ETL and MySQL data warehousing
+- Business analytics
+- Classical forecasting
+- Deep-learning forecasting
+- Transformer forecasting
+- Generative AI
+- Retrieval-Augmented Generation
+- Multi-agent AI
+- FastAPI backend
+- React frontend
+- MLflow experiment tracking
+- GitHub Actions CI/CD
+- Data quality monitoring
+- Model performance monitoring
+- Data drift monitoring
+- Unified monitoring reports
 
-        +
-
-GitHub Actions CI/CD
-
-        +
-
-Backend Test Automation
-
-        +
-
-Frontend Linting
-
-        +
-
-Frontend Production Build
-
-The project is maintained on the main branch.
+The project is maintained on the `main` branch.
