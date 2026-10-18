@@ -16,6 +16,7 @@ import {
   getSalesSummary,
   getTopStores,
   getCategoryPerformance,
+  IS_PUBLIC_DEMO,
 } from "../services/api";
 
 // import ReactMarkdown from "react-markdown";
@@ -34,10 +35,8 @@ import {
 
 function Dashboard() {
   const [salesSummary, setSalesSummary] = useState(null);
-  const [, setMonthlySales] = useState(null);
   const [monthlySalesData, setMonthlySalesData] = useState([]);
   const [forecast, setForecast] = useState(null);
-
   const [topStores, setTopStores] = useState([]);
   const [categoryPerformance, setCategoryPerformance] = useState([]);
 
@@ -52,7 +51,7 @@ function Dashboard() {
       const results = await Promise.allSettled([
         getSalesSummary(),
         getMonthlySales(),
-        getForecast("What is the best forecasting model."),
+        IS_PUBLIC_DEMO ? Promise.resolve(null) : getForecast("What is the best forecasting model?"),
         getTopStores(),
         getCategoryPerformance(),
       ]);
@@ -73,17 +72,19 @@ function Dashboard() {
       } else {
         console.error(
           "Sales summary failed:",
-          monthlyResult.reason,
+          summaryResult.reason,
         );
 
-        setMonthlySales(null);
+      }
+
+      if (forecastResult?.status === "fulfilled") {
+        setForecast(forecastResult.value);
       }
 
       // -----------------------------
       // Monthly Sales
       // -----------------------------
       if (monthlyResult.status === "fulfilled") {
-        setMonthlySales(monthlyResult.value);
 
         const chartData = monthlyResult.value.data.map((item) => ({
           period: `${item.year}-${String(item.month).padStart(2, "0")}`,
@@ -98,22 +99,7 @@ function Dashboard() {
           monthlyResult.reason,
         );
 
-        setMonthlySales(null);
         setMonthlySalesData([]);
-      }
-
-      // -----------------------------
-      // Forecast
-      // -----------------------------
-      if (forecastResult.status === "fulfilled") {
-        setForecast(forecastResult.value);
-      } else {
-        console.error(
-          "Forecast failed:",
-          forecastResult.reason,
-        );
-
-        setForecast(null);
       }
 
       // -----------------------------
@@ -155,7 +141,9 @@ function Dashboard() {
 
       if (failedRequests.length > 0) {
         setError(
-          "Some intelligence services are temporarily unavailable. Available data is still being displayed.",
+          IS_PUBLIC_DEMO
+            ? "Some demo data could not be loaded. The service may be starting after idle time; please retry shortly."
+            : "Some intelligence services are temporarily unavailable. Available data is still being displayed.",
         );
       }
 
@@ -183,7 +171,7 @@ function Dashboard() {
 
         <div className="dashboard-status">
           <span className="status-dot"></span>
-          Live Intelligence
+          {IS_PUBLIC_DEMO ? "Precomputed Demo Data" : "Live Intelligence"}
         </div>
       </div>
 
@@ -204,15 +192,15 @@ function Dashboard() {
       <div className="metrics-grid">
 
         <MetricCard
-          title="Total Sales"
+          title="Item Units Sold"
           value={
             loading
               ? "..."
               : salesSummary?.data?.[0]?.total_sales != null
-                ? `${(salesSummary.data[0].total_sales / 1000000).toFixed(1)}M`
+                ? `${(salesSummary.data[0].total_sales / 1000000).toFixed(1)}M units`
                 : "Unavailable"
           }
-          description="Total sales value"
+          description="Summed item quantities in the snapshot"
           icon={<TrendingUp size={20} />}
         />
 
@@ -232,7 +220,7 @@ function Dashboard() {
         />
 
         <MetricCard
-          title="Average Sale"
+          title="Average Units per Record"
           value={
             loading
               ? "..."
@@ -240,7 +228,7 @@ function Dashboard() {
                 ? salesSummary.data[0].average_sales.toFixed(2)
                 : "Unavailable"
           }
-          description="Average sales value per record"
+          description="Average item quantity per record"
           icon={<Package size={20} />}
         />
 
@@ -266,10 +254,10 @@ function Dashboard() {
           <div className="card-header">
 
             <div>
-              <h2>Monthly Sales</h2>
+              <h2>Monthly Item Sales</h2>
 
               <p>
-                Historical revenue trend
+                Historical item units sold
               </p>
             </div>
 
@@ -309,13 +297,13 @@ function Dashboard() {
                   <YAxis
                     tick={{ fontSize: 12 }}
                     tickFormatter={(value) =>
-                      `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                     }
                   />
 
                   <Tooltip
                     formatter={(value) =>
-                      `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                     }
                   />
 
@@ -350,10 +338,12 @@ function Dashboard() {
           <div className="card-header">
 
             <div>
-              <h2>Forecast Intelligence</h2>
+              <h2>Forecasting Evidence</h2>
 
               <p>
-                Current forecasting assessment
+                {IS_PUBLIC_DEMO
+                  ? "Recorded model comparisons and a historical holdout are available on the Forecasting page."
+                  : "Forecasting intelligence from the local production service."}
               </p>
             </div>
 
@@ -361,31 +351,15 @@ function Dashboard() {
 
           </div>
 
-          <div className="forecast-summary">
-
-            {loading ? (
-              <div className="loading-state">
-                Loading forecast...
+            <div className="forecast-summary">
+              <div className="forecast-status">{IS_PUBLIC_DEMO ? "Historical evaluation" : "Forecasting service"}</div>
+              <div className="forecast-description">
+                {IS_PUBLIC_DEMO
+                  ? "No new forecast runs in this public demo. View the existing benchmark and held-out ARIMA results."
+                  : forecast?.response || "Forecasting service is temporarily unavailable."}
               </div>
-            ) : (
-              <>
-                <div className="forecast-status">
-                  Forecast Model
-                </div>
-
-                <div className="forecast-model">
-                  {forecast?.response ? "Prophet" : "Unavailable"}
-                </div>
-
-                <div className="forecast-description">
-                  {forecast?.response
-                    ? "Forecast evaluation is available through the forecasting service."
-                    : "Forecast service is temporarily unavailable. Please try again later."}
-                </div>
-              </>
-            )}
-
-          </div>
+              <a href="/forecasting" className="primary-button">{IS_PUBLIC_DEMO ? "View forecasting results" : "Open Forecasting"}</a>
+            </div>
 
         </div>
 
@@ -396,7 +370,7 @@ function Dashboard() {
           <div className="card-header">
             <div>
               <h2>Top Performing Stores</h2>
-              <p>Stores ranked by total sales value</p>
+              <p>Stores ranked by item units sold</p>
             </div>
             <Store size={20} />
           </div>
@@ -422,12 +396,12 @@ function Dashboard() {
                   <YAxis
                     tick={{ fontSize: 12 }}
                     tickFormatter={(value) =>
-                      `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                     }
                   />
                   <Tooltip
                     formatter={(value) =>
-                      `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                     }
                   />
                   <Bar
@@ -449,8 +423,8 @@ function Dashboard() {
         <div className="dashboard-card">
           <div className="card-header">
             <div>
-              <h2>Category Performance</h2>
-              <p>Sales distribution across categories</p>
+              <h2>Category Item Sales</h2>
+              <p>Item units sold by category</p>
             </div>
             <Package size={20} />
           </div>
@@ -476,12 +450,12 @@ function Dashboard() {
                   <YAxis
                     tick={{ fontSize: 12 }}
                     tickFormatter={(value) =>
-                      `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                     }
                   />
                   <Tooltip
                     formatter={(value) =>
-                      `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                     }
                   />
                   <Bar
@@ -527,10 +501,10 @@ function Dashboard() {
             <MessageSquare size={22} />
 
             <div>
-              <h3>Ask AI</h3>
+              <h3>{IS_PUBLIC_DEMO ? "Open Demo Chat" : "Ask AI"}</h3>
 
               <p>
-                Ask a natural-language business question.
+                {IS_PUBLIC_DEMO ? "Try a clearly labeled demo interaction." : "Ask a natural-language business question."}
               </p>
             </div>
 

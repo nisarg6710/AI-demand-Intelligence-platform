@@ -1,0 +1,17 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "cat_id":  "FOODS",
+                     "total_sales":  45089939.0
+                 },
+                 {
+                     "cat_id":  "HOUSEHOLD",
+                     "total_sales":  14480670.0
+                 },
+                 {
+                     "cat_id":  "HOBBIES",
+                     "total_sales":  6124800.0
+                 }
+             ]
+}

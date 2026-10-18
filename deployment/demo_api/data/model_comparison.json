@@ -1,0 +1,38 @@
+﻿{
+    "success":  true,
+    "source":  "artifacts/classical_model_comparison.csv",
+    "data":  [
+                 {
+                     "model":  "ProphetModel",
+                     "mae":  4410.4142609664241,
+                     "rmse":  5537.9290052073,
+                     "mape":  628.88851254591259,
+                     "train_time_s":  1.1280960000003688,
+                     "predict_time_s":  0.43001799998455681
+                 },
+                 {
+                     "model":  "SARIMAModel",
+                     "mae":  5176.8476158046215,
+                     "rmse":  6580.6553594898542,
+                     "mape":  866.94347698690478,
+                     "train_time_s":  1.9713030999992043,
+                     "predict_time_s":  0.025331299984827638
+                 },
+                 {
+                     "model":  "ARIMAModel",
+                     "mae":  5102.8347152910574,
+                     "rmse":  6626.7775031727288,
+                     "mape":  732.71100285564626,
+                     "train_time_s":  0.64133750001201406,
+                     "predict_time_s":  0.032747299992479384
+                 },
+                 {
+                     "model":  "MovingAverageModel",
+                     "mae":  5255.919903568567,
+                     "rmse":  6660.7313507216832,
+                     "mape":  739.72343478208518,
+                     "train_time_s":  0.000381199992261827,
+                     "predict_time_s":  0.012444899999536574
+                 }
+             ]
+}

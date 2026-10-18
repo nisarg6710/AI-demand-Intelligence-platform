@@ -1,0 +1,12 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "total_records":  58327370,
+                     "total_sales":  65695409.0,
+                     "average_sales":  1.126322,
+                     "minimum_sales":  0,
+                     "maximum_sales":  763
+                 }
+             ]
+}

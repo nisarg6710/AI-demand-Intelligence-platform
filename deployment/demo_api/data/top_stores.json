@@ -1,0 +1,45 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "store_id":  "CA_3",
+                     "total_sales":  11188180.0
+                 },
+                 {
+                     "store_id":  "CA_1",
+                     "total_sales":  7698216.0
+                 },
+                 {
+                     "store_id":  "TX_2",
+                     "total_sales":  7214384.0
+                 },
+                 {
+                     "store_id":  "WI_2",
+                     "total_sales":  6544012.0
+                 },
+                 {
+                     "store_id":  "WI_3",
+                     "total_sales":  6427782.0
+                 },
+                 {
+                     "store_id":  "TX_3",
+                     "total_sales":  6089330.0
+                 },
+                 {
+                     "store_id":  "CA_2",
+                     "total_sales":  5685475.0
+                 },
+                 {
+                     "store_id":  "TX_1",
+                     "total_sales":  5595292.0
+                 },
+                 {
+                     "store_id":  "WI_1",
+                     "total_sales":  5149062.0
+                 },
+                 {
+                     "store_id":  "CA_4",
+                     "total_sales":  4103676.0
+                 }
+             ]
+}

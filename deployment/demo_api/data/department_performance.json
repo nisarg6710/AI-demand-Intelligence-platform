@@ -1,0 +1,33 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "dept_id":  "FOODS_3",
+                     "total_sales":  32372076.0
+                 },
+                 {
+                     "dept_id":  "HOUSEHOLD_1",
+                     "total_sales":  11500526.0
+                 },
+                 {
+                     "dept_id":  "FOODS_2",
+                     "total_sales":  7629822.0
+                 },
+                 {
+                     "dept_id":  "HOBBIES_1",
+                     "total_sales":  5596460.0
+                 },
+                 {
+                     "dept_id":  "FOODS_1",
+                     "total_sales":  5088041.0
+                 },
+                 {
+                     "dept_id":  "HOUSEHOLD_2",
+                     "total_sales":  2980144.0
+                 },
+                 {
+                     "dept_id":  "HOBBIES_2",
+                     "total_sales":  528340.0
+                 }
+             ]
+}

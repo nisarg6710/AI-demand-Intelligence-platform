@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
-import { getChat } from "../services/api";
+import { getChat, IS_PUBLIC_DEMO } from "../services/api";
 
 function Chat() {
   const [question, setQuestion] = useState("");
@@ -61,9 +61,9 @@ function Chat() {
     } catch (err) {
       console.error("Chat request failed:", err);
 
-      setError(
-        "Unable to retrieve an AI response. Please try again."
-      );
+      setError(IS_PUBLIC_DEMO
+        ? "Unable to retrieve a demo response. The service may be waking after idle time; please retry shortly."
+        : "Unable to retrieve an AI response. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -93,15 +93,17 @@ function Chat() {
       {/* Header */}
       <div className="page-header">
         <div>
-          <h1>AI Business Chat</h1>
+          <h1>{IS_PUBLIC_DEMO ? "Business Chat Demo" : "AI Business Chat"}</h1>
           <p>
-            Ask natural-language questions about your retail data.
+            {IS_PUBLIC_DEMO
+              ? "Demo interactions only. Responses do not call Gemini, query the live database, or run production agents."
+              : "Ask natural-language questions about your retail data through the local production assistant."}
           </p>
         </div>
 
         <div className="dashboard-status">
           <span className="status-dot"></span>
-          AI Intelligence
+          {IS_PUBLIC_DEMO ? "Demo Interaction" : "AI Intelligence"}
         </div>
       </div>
 
@@ -111,9 +113,11 @@ function Chat() {
 
           <div className="card-header">
             <div>
-              <h2>Active Intelligence Agents</h2>
+              <h2>{IS_PUBLIC_DEMO ? "Demo Response Label" : "Active Intelligence Agents"}</h2>
               <p>
-                Agents selected by the query routing system.
+                {IS_PUBLIC_DEMO
+                  ? "This label describes the demo response, not a running production agent."
+                  : "Agents selected by the production query routing system."}
               </p>
             </div>
 
@@ -139,10 +143,11 @@ function Chat() {
 
         <div className="chat-header">
           <div>
-            <h2>Business Intelligence Assistant</h2>
+            <h2>{IS_PUBLIC_DEMO ? "Demo Assistant" : "Business Intelligence Assistant"}</h2>
             <p>
-              Ask about sales, forecasting, stores, products,
-              and business performance.
+              {IS_PUBLIC_DEMO
+                ? "Ask about the available snapshots. This demo does not query live data or invoke an AI assistant."
+                : "Ask about sales, forecasting, stores, products, and business performance."}
             </p>
           </div>
 
@@ -172,9 +177,7 @@ function Chat() {
               </h3>
 
               <p>
-                Ask a question about your retail data and
-                the AI agent system will route it to the
-                appropriate specialist.
+                The public demo returns an explanatory response. It does not execute the production AI agent system.
               </p>
 
             </div>
@@ -198,7 +201,7 @@ function Chat() {
                   <div className="chat-message-role">
                     {message.role === "user"
                       ? "You"
-                      : "AI Assistant"}
+                      : (IS_PUBLIC_DEMO ? "Demo Assistant" : "AI Assistant")}
                   </div>
 
                   {message.role === "assistant" ? (
@@ -227,7 +230,7 @@ function Chat() {
               <div className="chat-message-content">
 
                 <div className="chat-message-role">
-                  AI Assistant
+                  {IS_PUBLIC_DEMO ? "Demo Assistant" : "AI Assistant"}
                 </div>
 
                 <div className="chat-thinking">
@@ -235,7 +238,9 @@ function Chat() {
                     size={16}
                     className="spin"
                   />
-                  Analyzing your question...
+                  {IS_PUBLIC_DEMO
+                    ? "Waiting for the demo service. It may be waking after idle time..."
+                    : "Analyzing your question..."}
                 </div>
 
               </div>
@@ -284,7 +289,7 @@ function Chat() {
               ) : (
                 <>
                   <Send size={17} />
-                  Ask AI
+                  {IS_PUBLIC_DEMO ? "Send Demo Question" : "Ask AI"}
                 </>
               )}
             </button>

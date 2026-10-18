@@ -7,6 +7,7 @@ import {
   ArrowDown,
   CheckCircle2,
 } from "lucide-react";
+import { IS_PUBLIC_DEMO } from "../services/api";
 
 const agents = [
   {
@@ -68,13 +69,15 @@ function Agents() {
         <div>
           <h1>AI Agents</h1>
           <p>
-            Specialized intelligence agents powering the retail platform.
+            {IS_PUBLIC_DEMO
+              ? "Production agent architecture overview. These agents do not execute in the public demo."
+              : "Specialized intelligence agents powering the local production application."}
           </p>
         </div>
 
         <div className="dashboard-status">
           <span className="status-dot"></span>
-          Multi-Agent System
+          {IS_PUBLIC_DEMO ? "Production Architecture" : "Multi-Agent System"}
         </div>
       </div>
 
@@ -85,7 +88,9 @@ function Agents() {
           <div>
             <h2>Multi-Agent Architecture</h2>
             <p>
-              Business questions are routed to specialized intelligence agents.
+              {IS_PUBLIC_DEMO
+                ? "The full local application routes questions to specialized agents; this public demo displays the architecture only."
+                : "Business questions are routed to specialized intelligence agents."}
             </p>
           </div>
 
@@ -97,7 +102,7 @@ function Agents() {
           <div className="agent-flow-node router-node">
             <Brain size={22} />
             <strong>Query Router</strong>
-            <span>Understands the business question</span>
+            <span>Production app: routes a business question</span>
           </div>
 
           <ArrowDown className="agent-flow-arrow" size={22} />
@@ -114,7 +119,7 @@ function Agents() {
                 >
                   <Icon size={20} />
                   <strong>{agent.name}</strong>
-                  <span>Specialized analysis</span>
+                  <span>Production app component</span>
                 </div>
               );
             })}
@@ -126,7 +131,7 @@ function Agents() {
           <div className="agent-flow-node executive-node">
             <Brain size={22} />
             <strong>Executive Response</strong>
-            <span>Combines intelligence into a business response</span>
+            <span>Production app: combines agent outputs</span>
           </div>
 
         </div>
@@ -157,7 +162,7 @@ function Agents() {
 
                     <div className="agent-status">
                       <span className="status-dot"></span>
-                      Available
+                      {IS_PUBLIC_DEMO ? "Production app" : "Available"}
                     </div>
                   </div>
                 </div>
@@ -197,7 +202,9 @@ function Agents() {
           <div>
             <h2>How the System Works</h2>
             <p>
-              End-to-end flow for natural-language business intelligence.
+              {IS_PUBLIC_DEMO
+                ? "Production workflow; not executed by the public demo."
+                : "End-to-end flow for natural-language business intelligence."}
             </p>
           </div>
 

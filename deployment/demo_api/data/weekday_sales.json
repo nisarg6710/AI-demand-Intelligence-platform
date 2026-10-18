@@ -1,0 +1,33 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "weekday":  "Monday",
+                     "total_sales":  8968860.0
+                 },
+                 {
+                     "weekday":  "Tuesday",
+                     "total_sales":  8290677.0
+                 },
+                 {
+                     "weekday":  "Wednesday",
+                     "total_sales":  8192736.0
+                 },
+                 {
+                     "weekday":  "Thursday",
+                     "total_sales":  8245967.0
+                 },
+                 {
+                     "weekday":  "Friday",
+                     "total_sales":  9343694.0
+                 },
+                 {
+                     "weekday":  "Saturday",
+                     "total_sales":  11383849.0
+                 },
+                 {
+                     "weekday":  "Sunday",
+                     "total_sales":  11269626.0
+                 }
+             ]
+}

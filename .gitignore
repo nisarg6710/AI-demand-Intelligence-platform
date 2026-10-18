@@ -53,6 +53,8 @@ data/external/
 Thumbs.db
 
 frontend/.env
+frontend/.env.*
+!frontend/.env.example
 node_modules/
 frontend/node_modules/
 frontend/dist/

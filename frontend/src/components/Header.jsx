@@ -1,3 +1,5 @@
+import { IS_PUBLIC_DEMO } from "../services/api";
+
 function Header() {
   return (
     <header className="header">
@@ -8,7 +10,7 @@ function Header() {
 
       <div className="api-status">
         <span className="status-dot"></span>
-        <span>API Online</span>
+        <span>{IS_PUBLIC_DEMO ? "Public Demo" : "API Online"}</span>
       </div>
     </header>
   );

@@ -1,0 +1,45 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "item_id":  "FOODS_3_090",
+                     "total_sales":  1002529.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_586",
+                     "total_sales":  920242.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_252",
+                     "total_sales":  565299.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_555",
+                     "total_sales":  491287.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_714",
+                     "total_sales":  396172.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_587",
+                     "total_sales":  396119.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_694",
+                     "total_sales":  390001.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_226",
+                     "total_sales":  363082.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_202",
+                     "total_sales":  295689.0
+                 },
+                 {
+                     "item_id":  "FOODS_3_723",
+                     "total_sales":  284333.0
+                 }
+             ]
+}

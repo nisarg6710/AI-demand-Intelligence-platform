@@ -14,6 +14,7 @@ import {
   getDepartmentPerformance,
   getTopProducts,
   getWeekdaySales,
+  IS_PUBLIC_DEMO,
 } from "../services/api";
 
 import {
@@ -86,9 +87,15 @@ function Analytics() {
         setWeekdays(weekdayResult.value.data || []);
       }
 
-      if (results.some((result) => result.status === "rejected")) {
+      const hasEmptyResult = results.some(
+        (result) => result.status === "fulfilled"
+          && (!Array.isArray(result.value.data) || result.value.data.length === 0),
+      );
+      if (results.some((result) => result.status === "rejected") || hasEmptyResult) {
         setError(
-          "Some analytics data is temporarily unavailable."
+          IS_PUBLIC_DEMO
+            ? "Some analytics requests failed or returned no rows. The demo service may be starting after idle time; please retry shortly."
+            : "Some analytics data is temporarily unavailable."
         );
       }
 
@@ -110,13 +117,13 @@ function Analytics() {
         <div>
           <h1>Analytics</h1>
           <p>
-            Explore historical sales and business performance.
+            Explore historical item sales from precomputed aggregate snapshots.
           </p>
         </div>
 
         <div className="dashboard-status">
           <span className="status-dot"></span>
-          Live Analytics
+          {IS_PUBLIC_DEMO ? "Precomputed Analytics" : "Live Analytics"}
         </div>
       </div>
 
@@ -141,8 +148,8 @@ function Analytics() {
 
             <div className="card-header">
               <div>
-                <h2>Monthly Sales</h2>
-                <p>Historical monthly sales trend</p>
+                <h2>Monthly Item Sales</h2>
+                <p>Historical item units sold</p>
               </div>
 
               <BarChart3 size={20} />
@@ -162,13 +169,13 @@ function Analytics() {
 
                   <YAxis
                     tickFormatter={(value) =>
-                      `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                     }
                   />
 
                   <Tooltip
                     formatter={(value) =>
-                      `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                     }
                   />
 
@@ -196,7 +203,7 @@ function Analytics() {
               <div className="card-header">
                 <div>
                   <h2>Store Performance</h2>
-                  <p>Total sales by store</p>
+                  <p>Total item units by store</p>
                 </div>
 
                 <Store size={20} />
@@ -213,13 +220,13 @@ function Analytics() {
 
                     <YAxis
                       tickFormatter={(value) =>
-                        `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                       }
                     />
 
                     <Tooltip
                       formatter={(value) =>
-                        `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                       }
                     />
 
@@ -239,8 +246,8 @@ function Analytics() {
 
               <div className="card-header">
                 <div>
-                  <h2>Category Performance</h2>
-                  <p>Total sales by category</p>
+                  <h2>Category Item Sales</h2>
+                  <p>Total item units by category</p>
                 </div>
 
                 <Package size={20} />
@@ -257,13 +264,13 @@ function Analytics() {
 
                     <YAxis
                       tickFormatter={(value) =>
-                        `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                       }
                     />
 
                     <Tooltip
                       formatter={(value) =>
-                        `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                       }
                     />
 
@@ -289,8 +296,8 @@ function Analytics() {
 
               <div className="card-header">
                 <div>
-                  <h2>Department Performance</h2>
-                  <p>Total sales by department</p>
+                  <h2>Department Item Sales</h2>
+                  <p>Total item units by department</p>
                 </div>
 
                 <BarChart3 size={20} />
@@ -307,13 +314,13 @@ function Analytics() {
 
                     <YAxis
                       tickFormatter={(value) =>
-                        `$${(value / 1000000).toFixed(1)}M`
+                      `${(value / 1000000).toFixed(1)}M units`
                       }
                     />
 
                     <Tooltip
                       formatter={(value) =>
-                        `$${Number(value).toLocaleString()}`
+                      `${Number(value).toLocaleString()} units`
                       }
                     />
 
@@ -351,7 +358,7 @@ function Analytics() {
 
                     <YAxis
                       tickFormatter={(value) =>
-                        `${(value / 1000000).toFixed(1)}M`
+                        `${(value / 1000000).toFixed(1)}M units`
                       }
                     />
 

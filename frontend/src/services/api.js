@@ -1,8 +1,11 @@
 // single place of frontend-backend communication
 import axios from "axios";
 
+export const IS_PUBLIC_DEMO = import.meta.env.VITE_DEMO_MODE === "true";
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 120000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -69,6 +72,16 @@ export const getCategoryPerformance = async () => {
 
 export const getForecastPredictions = async () => {
   const response = await api.get("/forecast/predictions");
+  return response.data;
+};
+
+export const getModelComparison = async () => {
+  const response = await api.get("/forecast/model-comparison");
+  return response.data;
+};
+
+export const getHistoricalHoldout = async () => {
+  const response = await api.get("/forecast/historical-holdout");
   return response.data;
 };
 

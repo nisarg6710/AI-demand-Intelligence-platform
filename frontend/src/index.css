@@ -621,6 +621,32 @@ a {
   color: #6b7280;
 }
 
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.table-container table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+
+.table-container th,
+.table-container td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.table-container th {
+  color: #6b7280;
+  font-weight: 600;
+}
+
 /* =========================
    Quick Actions
 ========================= */

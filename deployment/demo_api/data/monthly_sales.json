@@ -1,0 +1,325 @@
+﻿{
+    "success":  true,
+    "data":  [
+                 {
+                     "year":  2011,
+                     "month":  1,
+                     "total_sales":  88163.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  2,
+                     "total_sales":  726375.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  3,
+                     "total_sales":  763567.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  4,
+                     "total_sales":  737713.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  5,
+                     "total_sales":  719562.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  6,
+                     "total_sales":  753380.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  7,
+                     "total_sales":  819820.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  8,
+                     "total_sales":  825694.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  9,
+                     "total_sales":  813683.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  10,
+                     "total_sales":  898243.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  11,
+                     "total_sales":  823087.0
+                 },
+                 {
+                     "year":  2011,
+                     "month":  12,
+                     "total_sales":  887298.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  1,
+                     "total_sales":  893375.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  2,
+                     "total_sales":  897990.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  3,
+                     "total_sales":  986894.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  4,
+                     "total_sales":  944858.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  5,
+                     "total_sales":  997746.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  6,
+                     "total_sales":  1095609.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  7,
+                     "total_sales":  1080777.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  8,
+                     "total_sales":  1102780.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  9,
+                     "total_sales":  1064364.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  10,
+                     "total_sales":  1006308.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  11,
+                     "total_sales":  960684.0
+                 },
+                 {
+                     "year":  2012,
+                     "month":  12,
+                     "total_sales":  1030452.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  1,
+                     "total_sales":  1008560.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  2,
+                     "total_sales":  1010660.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  3,
+                     "total_sales":  1117570.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  4,
+                     "total_sales":  1034036.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  5,
+                     "total_sales":  1074683.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  6,
+                     "total_sales":  1135593.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  7,
+                     "total_sales":  1159467.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  8,
+                     "total_sales":  1204813.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  9,
+                     "total_sales":  1166515.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  10,
+                     "total_sales":  1124523.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  11,
+                     "total_sales":  1044799.0
+                 },
+                 {
+                     "year":  2013,
+                     "month":  12,
+                     "total_sales":  1054534.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  1,
+                     "total_sales":  1057012.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  2,
+                     "total_sales":  1009760.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  3,
+                     "total_sales":  1123706.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  4,
+                     "total_sales":  1104287.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  5,
+                     "total_sales":  1093092.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  6,
+                     "total_sales":  1110031.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  7,
+                     "total_sales":  1151764.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  8,
+                     "total_sales":  1184102.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  9,
+                     "total_sales":  1088414.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  10,
+                     "total_sales":  1103078.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  11,
+                     "total_sales":  1051078.0
+                 },
+                 {
+                     "year":  2014,
+                     "month":  12,
+                     "total_sales":  1013452.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  1,
+                     "total_sales":  1083115.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  2,
+                     "total_sales":  1031877.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  3,
+                     "total_sales":  1119727.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  4,
+                     "total_sales":  1093429.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  5,
+                     "total_sales":  1153014.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  6,
+                     "total_sales":  1155599.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  7,
+                     "total_sales":  1232147.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  8,
+                     "total_sales":  1254341.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  9,
+                     "total_sales":  1188913.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  10,
+                     "total_sales":  1248437.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  11,
+                     "total_sales":  1113976.0
+                 },
+                 {
+                     "year":  2015,
+                     "month":  12,
+                     "total_sales":  1126236.0
+                 },
+                 {
+                     "year":  2016,
+                     "month":  1,
+                     "total_sales":  1215286.0
+                 },
+                 {
+                     "year":  2016,
+                     "month":  2,
+                     "total_sales":  1212927.0
+                 },
+                 {
+                     "year":  2016,
+                     "month":  3,
+                     "total_sales":  1275746.0
+                 },
+                 {
+                     "year":  2016,
+                     "month":  4,
+                     "total_sales":  1046688.0
+                 }
+             ]
+}
