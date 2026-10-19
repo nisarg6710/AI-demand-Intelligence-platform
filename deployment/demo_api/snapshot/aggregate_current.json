@@ -1,0 +1,376 @@
+{
+  "available_metrics": [
+    "overall stored record count and unit summary",
+    "monthly unit totals by year and month",
+    "store unit totals, stored average, and peak fact-row units",
+    "product unit totals",
+    "category unit totals",
+    "department unit totals",
+    "weekday unit totals"
+  ],
+  "definition_fingerprint": "39746b71a4e991c940848eee1012642dede7ef67b05af150d7860c3fbe61c6e6",
+  "elapsed_seconds": {
+    "aggregate_table_read_and_validation": 0.087,
+    "sqlite_build_and_validation": 0.06
+  },
+  "format_version": 1,
+  "generated_at_utc": "2026-10-19T07:46:10.111765+00:00",
+  "generation_id": "20261019T074610Z_ec6032ec1d3d458381a2f31f43d10371",
+  "mode": "aggregate_only",
+  "optimizer_plan_fingerprint": {
+    "collected": false,
+    "meaning": "If collected, an optimizer-plan fingerprint describes a query access plan only; it does not prove aggregate freshness or data correctness.",
+    "value": null
+  },
+  "outputs": {
+    "database_file": "aggregate_snapshot_20261019T074610Z_ec6032ec1d3d458381a2f31f43d10371.sqlite",
+    "database_size_bytes": 106496,
+    "manifest_pointer": "aggregate_current.json",
+    "manifest_pointer_size_bytes": 11693,
+    "schemas": {
+      "aggregate_category_performance": [
+        "cat_id",
+        "total_units"
+      ],
+      "aggregate_department_performance": [
+        "dept_id",
+        "total_units"
+      ],
+      "aggregate_monthly_sales": [
+        "year",
+        "month",
+        "total_units"
+      ],
+      "aggregate_product_performance": [
+        "item_id",
+        "total_units"
+      ],
+      "aggregate_sales_summary": [
+        "record_count",
+        "total_units",
+        "average_units_per_fact_row",
+        "minimum_units_per_fact_row",
+        "maximum_units_per_fact_row"
+      ],
+      "aggregate_store_performance": [
+        "store_id",
+        "total_units",
+        "average_units_per_fact_row",
+        "peak_fact_row_units"
+      ],
+      "aggregate_weekday_performance": [
+        "weekday",
+        "total_units"
+      ]
+    },
+    "table_row_counts": {
+      "aggregate_category_performance": 3,
+      "aggregate_department_performance": 7,
+      "aggregate_monthly_sales": 64,
+      "aggregate_product_performance": 3049,
+      "aggregate_sales_summary": 1,
+      "aggregate_store_performance": 10,
+      "aggregate_weekday_performance": 7
+    }
+  },
+  "source": {
+    "database": "demand_intelligence",
+    "freshness_note": "Repository metadata does not establish when these aggregates were last refreshed against sales_fact.",
+    "freshness_verified": false,
+    "live_schema_fingerprint": "e861e7b7f1d2a8eea3a1a6f40edb99a06c623405836d21ae34f51092ccbbec05",
+    "observed_columns": {
+      "analytics_category_performance": [
+        {
+          "column_key": "",
+          "column_name": "cat_id",
+          "column_type": "varchar(50)",
+          "data_type": "varchar",
+          "is_nullable": "YES",
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "MUL",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        }
+      ],
+      "analytics_department_performance": [
+        {
+          "column_key": "",
+          "column_name": "dept_id",
+          "column_type": "varchar(50)",
+          "data_type": "varchar",
+          "is_nullable": "YES",
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "MUL",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        }
+      ],
+      "analytics_monthly_sales": [
+        {
+          "column_key": "",
+          "column_name": "year",
+          "column_type": "int",
+          "data_type": "int",
+          "is_nullable": "YES",
+          "numeric_precision": 10,
+          "numeric_scale": 0,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "",
+          "column_name": "month",
+          "column_type": "int",
+          "data_type": "int",
+          "is_nullable": "YES",
+          "numeric_precision": 10,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        },
+        {
+          "column_key": "",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 3
+        }
+      ],
+      "analytics_product_performance": [
+        {
+          "column_key": "",
+          "column_name": "item_id",
+          "column_type": "varchar(50)",
+          "data_type": "varchar",
+          "is_nullable": "NO",
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "MUL",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        }
+      ],
+      "analytics_sales_summary": [
+        {
+          "column_key": "",
+          "column_name": "total_records",
+          "column_type": "bigint",
+          "data_type": "bigint",
+          "is_nullable": "NO",
+          "numeric_precision": 19,
+          "numeric_scale": 0,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        },
+        {
+          "column_key": "",
+          "column_name": "average_sales",
+          "column_type": "decimal(18,6)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 18,
+          "numeric_scale": 6,
+          "ordinal_position": 3
+        },
+        {
+          "column_key": "",
+          "column_name": "minimum_sales",
+          "column_type": "int",
+          "data_type": "int",
+          "is_nullable": "YES",
+          "numeric_precision": 10,
+          "numeric_scale": 0,
+          "ordinal_position": 4
+        },
+        {
+          "column_key": "",
+          "column_name": "maximum_sales",
+          "column_type": "int",
+          "data_type": "int",
+          "is_nullable": "YES",
+          "numeric_precision": 10,
+          "numeric_scale": 0,
+          "ordinal_position": 5
+        },
+        {
+          "column_key": "PRI",
+          "column_name": "id",
+          "column_type": "int",
+          "data_type": "int",
+          "is_nullable": "NO",
+          "numeric_precision": 10,
+          "numeric_scale": 0,
+          "ordinal_position": 6
+        }
+      ],
+      "analytics_store_performance": [
+        {
+          "column_key": "",
+          "column_name": "store_id",
+          "column_type": "varchar(20)",
+          "data_type": "varchar",
+          "is_nullable": "NO",
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        },
+        {
+          "column_key": "",
+          "column_name": "average_sales",
+          "column_type": "decimal(14,4)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 14,
+          "numeric_scale": 4,
+          "ordinal_position": 3
+        },
+        {
+          "column_key": "",
+          "column_name": "peak_sales",
+          "column_type": "int",
+          "data_type": "int",
+          "is_nullable": "YES",
+          "numeric_precision": 10,
+          "numeric_scale": 0,
+          "ordinal_position": 4
+        }
+      ],
+      "analytics_weekday_sales": [
+        {
+          "column_key": "",
+          "column_name": "weekday",
+          "column_type": "varchar(20)",
+          "data_type": "varchar",
+          "is_nullable": "YES",
+          "numeric_precision": null,
+          "numeric_scale": null,
+          "ordinal_position": 1
+        },
+        {
+          "column_key": "MUL",
+          "column_name": "total_sales",
+          "column_type": "decimal(32,0)",
+          "data_type": "decimal",
+          "is_nullable": "YES",
+          "numeric_precision": 32,
+          "numeric_scale": 0,
+          "ordinal_position": 2
+        }
+      ]
+    },
+    "scope": "Stored materialized aggregate snapshot only; no sales_fact or sales_enriched reads",
+    "tables": [
+      "analytics_sales_summary",
+      "analytics_monthly_sales",
+      "analytics_store_performance",
+      "analytics_product_performance",
+      "analytics_category_performance",
+      "analytics_department_performance",
+      "analytics_weekday_sales"
+    ],
+    "units": "sales values represent units sold, not currency or revenue"
+  },
+  "source_table_row_counts": {
+    "analytics_category_performance": 3,
+    "analytics_department_performance": 7,
+    "analytics_monthly_sales": 64,
+    "analytics_product_performance": 3049,
+    "analytics_sales_summary": 1,
+    "analytics_store_performance": 10,
+    "analytics_weekday_sales": 7
+  },
+  "transformation_validation_contract_version": "1.1.0",
+  "unavailable_metrics": [
+    "daily unit totals",
+    "sampled daily item-store observations",
+    "per-group fact-row counts except the overall stored summary count",
+    "product category and department identifiers (not present in the approved aggregate source tables)",
+    "aggregate freshness against sales_fact"
+  ],
+  "validation": {
+    "freshness_verified": false,
+    "group_keys_unique": {
+      "analytics_category_performance": true,
+      "analytics_department_performance": true,
+      "analytics_monthly_sales": true,
+      "analytics_product_performance": true,
+      "analytics_store_performance": true,
+      "analytics_weekday_sales": true
+    },
+    "group_sums_units": {
+      "analytics_category_performance": 65695409,
+      "analytics_department_performance": 65695409,
+      "analytics_monthly_sales": 65695409,
+      "analytics_product_performance": 65695409,
+      "analytics_store_performance": 65695409,
+      "analytics_weekday_sales": 65695409
+    },
+    "group_unit_totals_match_stored_summary": {
+      "analytics_category_performance": true,
+      "analytics_department_performance": true,
+      "analytics_monthly_sales": true,
+      "analytics_product_performance": true,
+      "analytics_store_performance": true,
+      "analytics_weekday_sales": true
+    },
+    "passed": true,
+    "source_table_row_counts": {
+      "analytics_category_performance": 3,
+      "analytics_department_performance": 7,
+      "analytics_monthly_sales": 64,
+      "analytics_product_performance": 3049,
+      "analytics_sales_summary": 1,
+      "analytics_store_performance": 10,
+      "analytics_weekday_sales": 7
+    },
+    "stored_summary_record_count": 58327370,
+    "stored_summary_total_units": 65695409,
+    "weekday_groups_complete": true
+  }
+}

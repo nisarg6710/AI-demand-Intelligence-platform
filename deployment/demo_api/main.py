@@ -5,9 +5,28 @@ import math
 from typing import Any
 from datetime import date
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+
+try:  # Works both as ``uvicorn main:app`` and as a repository package import.
+    from .repository import AggregateSnapshotRepository, SnapshotUnavailable
+    from .chat_router import ChatRoute, route_question
+    from .forecasting import (
+        DEFAULT_FORECAST_HORIZON,
+        MAX_FORECAST_HORIZON,
+        ForecastUnavailable,
+        seasonal_naive_forecast,
+    )
+except ImportError:  # pragma: no cover - exercised by Render's service root.
+    from repository import AggregateSnapshotRepository, SnapshotUnavailable
+    from chat_router import ChatRoute, route_question
+    from forecasting import (
+        DEFAULT_FORECAST_HORIZON,
+        MAX_FORECAST_HORIZON,
+        ForecastUnavailable,
+        seasonal_naive_forecast,
+    )
 
 
 # --------------------------------------------------
@@ -41,13 +60,6 @@ app.add_middleware(
 # --------------------------------------------------
 
 DATA_FILES = {
-    "monthly_sales": "monthly_sales.json",
-    "sales_summary": "sales_summary.json",
-    "top_stores": "top_stores.json",
-    "category_performance": "category_performance.json",
-    "department_performance": "department_performance.json",
-    "top_products": "top_products.json",
-    "weekday_sales": "weekday_sales.json",
     "model_comparison": "model_comparison.json",
     "historical_holdout": "historical_holdout_arima.json",
 }
@@ -141,12 +153,32 @@ def snapshot(name: str) -> dict[str, Any]:
     return json.loads(json.dumps(DATA[name]))
 
 
+def analytics_repository() -> AggregateSnapshotRepository:
+    try:
+        return AggregateSnapshotRepository.from_environment()
+    except SnapshotUnavailable as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The public analytics snapshot is unavailable or invalid.",
+        ) from exc
+
+
 # --------------------------------------------------
 # Request models
 # --------------------------------------------------
 
 class QuestionRequest(BaseModel):
     question: str = Field(..., min_length=1, max_length=2000)
+
+
+class ForecastRequest(QuestionRequest):
+    horizon: int = Field(
+        default=DEFAULT_FORECAST_HORIZON,
+        strict=True,
+        ge=1,
+        le=MAX_FORECAST_HORIZON,
+        description="Number of future months to compute, from 1 to 12.",
+    )
 
 
 # --------------------------------------------------
@@ -159,7 +191,7 @@ def root():
         "success": True,
         "name": "AI Demand Intelligence Platform",
         "mode": "public_demo",
-        "data_mode": "precomputed_snapshots",
+        "data_mode": "sqlite_aggregate_snapshot_and_recorded_forecast_artifacts",
         "database_connected": False,
         "external_ai_enabled": False,
         "available_pages": [
@@ -172,13 +204,33 @@ def root():
     }
 
 
+@app.get("/live")
+def liveness():
+    """Lightweight process liveness; does not assert analytics readiness."""
+    return {"success": True, "status": "alive", "mode": "public_demo"}
+
+
 @app.get("/health")
 def health():
+    """Readiness check used by Render; fail if the required snapshot is unusable."""
+    try:
+        repository = analytics_repository()
+    except HTTPException as exc:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "success": False,
+                "status": "not_ready",
+                "mode": "public_demo",
+                "data_mode": "sqlite_aggregate_snapshot",
+            },
+        ) from exc
     return {
         "success": True,
         "status": "healthy",
         "mode": "public_demo",
-        "data_mode": "precomputed_snapshots",
+        "data_mode": "sqlite_aggregate_snapshot",
+        **repository.metadata,
     }
 
 
@@ -188,51 +240,53 @@ def health():
 
 @app.get("/analytics/monthly-sales")
 def monthly_sales():
-    return snapshot("monthly_sales")
+    return analytics_repository().monthly_sales()
 
 
 @app.get("/analytics/summary")
 def sales_summary():
-    return snapshot("sales_summary")
+    return analytics_repository().summary()
 
 
 @app.get("/analytics/top-stores")
-def top_stores():
-    return snapshot("top_stores")
+def top_stores(limit: int = Query(default=10, ge=1, le=100)):
+    return analytics_repository().store_performance(limit)
 
 
 @app.get("/analytics/category-performance")
 def category_performance():
-    return snapshot("category_performance")
+    return analytics_repository().category_performance()
 
 
 @app.get("/analytics/department-performance")
 def department_performance():
-    return snapshot("department_performance")
+    return analytics_repository().department_performance()
 
 
 @app.get("/analytics/top-products")
-def top_products():
-    return snapshot("top_products")
+def top_products(limit: int = Query(default=10, ge=1, le=100)):
+    return analytics_repository().top_products(limit)
 
 
 @app.get("/analytics/weekday-sales")
 def weekday_sales():
-    return snapshot("weekday_sales")
+    return analytics_repository().weekday_performance()
 
 
 @app.post("/analytics")
 def analytics(request: QuestionRequest):
+    repository = analytics_repository()
     return {
         "success": True,
         "question": request.question,
         "response": (
-            "This public demo uses precomputed sales analytics. "
-            "Explore the Dashboard and Analytics pages for monthly sales, "
-            "store performance, category performance, departments, products, "
-            "and weekday trends. Arbitrary live database queries are not "
-            "available in this demo."
+            "Natural-language analytics queries are not executed by this demo. "
+            "The read-only snapshot supports overall summary, monthly sales, "
+            "store performance, top products, categories, departments, and "
+            "weekday totals through the analytics endpoints."
         ),
+        "supported": False,
+        **repository.metadata,
     }
 
 
@@ -241,18 +295,57 @@ def analytics(request: QuestionRequest):
 # --------------------------------------------------
 
 @app.post("/forecast")
-def forecast(request: QuestionRequest):
+def forecast(request: ForecastRequest):
+    repository = analytics_repository()
+    try:
+        monthly_result = repository.monthly_sales()
+        observed_months, forecast_periods = seasonal_naive_forecast(
+            monthly_result["data"], request.horizon
+        )
+    except ForecastUnavailable as exc:
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "success": False,
+                "status": "forecast_unavailable",
+                "message": str(exc),
+            },
+        ) from exc
+    except SnapshotUnavailable as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The public analytics snapshot is unavailable or invalid.",
+        ) from exc
+
+    first, last = observed_months[0], observed_months[-1]
+    forecast_start, forecast_end = forecast_periods[0], forecast_periods[-1]
+    method = "seasonal_naive_12_month"
     return {
         "success": True,
         "question": request.question,
-        "selected_action": "demo_forecast",
+        "selected_action": method,
         "response": (
-            "You are viewing the forecasting demonstration. The public demo "
-            "does not run the production forecasting pipeline or train a model "
-            "for each question. Use the available historical sales charts to "
-            "explore the exported data. Live, question-specific forecasts are "
-            "available only through the full local application."
+            f"Computed a {request.horizon}-month seasonal-naive baseline using each "
+            "month's units from 12 months earlier. Historical observations are "
+            f"separate ({first['year']}-{first['month']:02d} through "
+            f"{last['year']}-{last['month']:02d}); forecast periods are "
+            f"{forecast_start['year']}-{forecast_start['month']:02d} through "
+            f"{forecast_end['year']}-{forecast_end['month']:02d}. This is an "
+            "unbacktested baseline; no forecast accuracy or model superiority is claimed. "
+            "Sales are units sold, not revenue or currency, and snapshot freshness is unverified."
         ),
+        "method": method,
+        "horizon": request.horizon,
+        "observed_period": {
+            "start": {"year": first["year"], "month": first["month"]},
+            "end": {"year": last["year"], "month": last["month"]},
+            "count": len(observed_months),
+        },
+        "observed_months": observed_months,
+        "forecast_periods": forecast_periods,
+        **{key: monthly_result[key] for key in (
+            "data_source", "freshness_verified", "snapshot_generation", "units"
+        )},
     }
 
 
@@ -285,18 +378,112 @@ def forecast_historical_holdout():
 
 @app.post("/chat")
 def chat(request: QuestionRequest):
+    repository = analytics_repository()
+    route = route_question(request.question)
+    if route.intent is None:
+        return {
+            "success": False,
+            "question": request.question,
+            "selected_agents": ["Deterministic Analytics Router"],
+            "response": f"{route.reason} Snapshot freshness against MySQL is unverified.",
+            "supported": False,
+            "answer_generated": False,
+            "intent_status": route.status,
+            **repository.metadata,
+        }
+
+    operations = {
+        "summary": repository.summary,
+        "monthly_sales": repository.monthly_sales,
+        "top_stores": lambda: repository.store_performance(route.limit),
+        "top_products": lambda: repository.top_products(route.limit),
+        "category_performance": repository.category_performance,
+        "department_performance": repository.department_performance,
+        "weekday_performance": repository.weekday_performance,
+    }
+    try:
+        result = operations[route.intent]()
+    except SnapshotUnavailable as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The public analytics snapshot is unavailable or invalid.",
+        ) from exc
+
+    response = _format_chat_answer(route, result["data"])
     return {
         "success": True,
         "question": request.question,
-        "selected_agents": ["Demo Assistant"],
-        "response": (
-            "This is the portfolio demo assistant. It can direct you to the "
-            "available precomputed analytics, but it does not call Gemini, "
-            "query MySQL, or execute the production agent workflow. "
-            "Explore the Dashboard and Analytics pages for the exported "
-            "sales results."
-        ),
+        "selected_agents": ["Deterministic Analytics Router"],
+        "response": response,
+        "supported": True,
+        "answer_generated": True,
+        "intent_status": "supported",
+        "intent": route.intent,
+        "data": result["data"],
+        **{key: result[key] for key in (
+            "data_source", "freshness_verified", "snapshot_generation", "units"
+        )},
     }
+
+
+def _format_chat_answer(route: ChatRoute, rows: list[dict[str, Any]]) -> str:
+    """Render a concise response using only rows returned by repository calls."""
+    if route.intent == "summary":
+        row = rows[0]
+        content = (
+            f"The aggregate snapshot contains **{row['total_records']:,} daily item-store fact rows** "
+            f"and **{row['total_sales']:,} units sold**. Average: "
+            f"{row['average_sales']:.4f} units per fact row; minimum: "
+            f"{row['minimum_sales']:,}; maximum: {row['maximum_sales']:,}."
+        )
+    elif route.intent == "monthly_sales":
+        if not rows:
+            content = "No monthly aggregate rows are available in this snapshot."
+        else:
+            first, last = rows[0], rows[-1]
+            peak = max(rows, key=lambda row: row["total_sales"])
+            trough = min(rows, key=lambda row: row["total_sales"])
+            first_period = f"{first['year']}-{first['month']:02d}"
+            last_period = f"{last['year']}-{last['month']:02d}"
+            change = last["total_sales"] - first["total_sales"]
+            direction = "increase" if change > 0 else "decrease" if change < 0 else "no change"
+            content = (
+                f"The snapshot has **{len(rows)} monthly points**, from {first_period} to {last_period}. "
+                f"Units changed from {first['total_sales']:,} to {last['total_sales']:,} "
+                f"({direction} of {abs(change):,} units). Highest month: "
+                f"{peak['year']}-{peak['month']:02d} ({peak['total_sales']:,} units); "
+                f"lowest: {trough['year']}-{trough['month']:02d} ({trough['total_sales']:,} units)."
+            )
+    elif route.intent in {"top_stores", "top_products"}:
+        noun, key = ("store", "store_id") if route.intent == "top_stores" else ("product", "item_id")
+        if rows:
+            ranking = "\n".join(
+                f"{index}. {row[key]} — {row['total_sales']:,} units"
+                for index, row in enumerate(rows, start=1)
+            )
+            content = f"Top {noun}s by total units sold in the snapshot (up to {route.limit} rows):\n\n{ranking}"
+        else:
+            content = f"No {noun} ranking rows are available in this snapshot."
+    else:
+        labels = {
+            "category_performance": ("Category", "cat_id"),
+            "department_performance": ("Department", "dept_id"),
+            "weekday_performance": ("Weekday", "weekday"),
+        }
+        label, key = labels[route.intent]
+        ranking = "\n".join(
+            f"- {row[key]}: {row['total_sales']:,} units"
+            for row in rows
+        )
+        content = f"{label} performance by units sold in the snapshot:\n\n{ranking}"
+
+    return (
+        f"{content}\n\n"
+        "This deterministic demo answer uses approved read-only aggregate data; it does not call Gemini. "
+        "Sales are units sold, not currency. Store, product, category, department, and weekday aggregates "
+        "do not provide a specific date range, so no period is inferred for those results. "
+        "Snapshot freshness against MySQL is unverified."
+    )
 
 
 @app.post("/report")

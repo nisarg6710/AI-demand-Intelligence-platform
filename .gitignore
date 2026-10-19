@@ -73,3 +73,4 @@ mlartifacts/
 # MLflow generated artifacts
 artifacts/mlflow/
 artifacts/monitoring/
+exports/public_demo/

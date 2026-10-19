@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Send,
   MessageSquare,
@@ -16,6 +16,7 @@ function Chat() {
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const requestInFlight = useRef(false);
 
   const exampleQuestions = [
     "What are the top performing stores?",
@@ -27,10 +28,11 @@ function Chat() {
   const askQuestion = async (value = question) => {
     const trimmedQuestion = value.trim();
 
-    if (!trimmedQuestion || loading) {
+    if (!trimmedQuestion || requestInFlight.current) {
       return;
     }
 
+    requestInFlight.current = true;
     setLoading(true);
     setError(null);
 
@@ -46,25 +48,40 @@ function Chat() {
 
     try {
       const result = await getChat(trimmedQuestion);
+      if (!result || typeof result.response !== "string") {
+        throw new Error("The chat service returned an incomplete response.");
+      }
 
       setSelectedAgents(result.selected_agents || []);
+
+      const supported = result.success === true && result.supported === true;
+      const metadata = result.snapshot_generation
+        ? `Snapshot ${result.snapshot_generation} · freshness unverified · ${result.units || "units sold"}`
+        : null;
 
       setMessages((previous) => [
         ...previous,
         {
           role: "assistant",
-          content:
-            result.response ||
-            "No response was returned by the intelligence system.",
+          content: result.response,
+          status: supported ? "answer" : result.intent_status || "unsupported",
+          metadata,
         },
       ]);
     } catch (err) {
       console.error("Chat request failed:", err);
 
-      setError(IS_PUBLIC_DEMO
-        ? "Unable to retrieve a demo response. The service may be waking after idle time; please retry shortly."
-        : "Unable to retrieve an AI response. Please try again.");
+      if (err.response?.status === 503) {
+        setError("The analytics snapshot is unavailable or invalid. No analytical answer was returned; please try again later.");
+      } else if (err.response) {
+        setError(`The chat request could not be completed (HTTP ${err.response.status}). No analytical answer was returned.`);
+      } else {
+        setError(IS_PUBLIC_DEMO
+          ? "Unable to reach the demo service. It may be waking after idle time; no analytical answer was returned. Please retry shortly."
+          : "Unable to retrieve an AI response. Please try again.");
+      }
     } finally {
+      requestInFlight.current = false;
       setLoading(false);
     }
   };
@@ -156,6 +173,7 @@ function Chat() {
               type="button"
               className="secondary-button"
               onClick={clearChat}
+              disabled={loading}
             >
               Clear Chat
             </button>
@@ -205,11 +223,23 @@ function Chat() {
                   </div>
 
                   {message.role === "assistant" ? (
-                    <div className="markdown-content">
-                      <ReactMarkdown>
-                        {message.content}
-                      </ReactMarkdown>
-                    </div>
+                    <>
+                      {IS_PUBLIC_DEMO && message.status && (
+                        <p className="chat-message-status">
+                          {message.status === "answer"
+                            ? "Snapshot-grounded answer"
+                            : message.status === "ambiguous"
+                              ? "Please clarify"
+                              : "Unsupported question"}
+                        </p>
+                      )}
+                      <div className="markdown-content">
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                      </div>
+                      {message.metadata && (
+                        <p className="chat-message-metadata">{message.metadata}</p>
+                      )}
+                    </>
                   ) : (
                     <p>{message.content}</p>
                   )}

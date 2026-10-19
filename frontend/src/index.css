@@ -2082,6 +2082,26 @@ a {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
 }
 
+.forecast-horizon-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.forecast-horizon-control select {
+  min-width: 130px;
+  padding: 8px 10px;
+  border: 1px solid #d9dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #111827;
+  font: inherit;
+}
+
 .primary-button {
   width: fit-content;
 
@@ -2174,6 +2194,27 @@ a {
 
 .forecast-result {
   padding-top: 8px;
+}
+
+.forecast-result-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 22px;
+}
+
+.forecast-result-metadata span {
+  padding: 7px 10px;
+  border: 1px solid #dbeafe;
+  border-radius: 7px;
+  background: #f8fbff;
+  color: #475569;
+  font-size: 12px;
+}
+
+.forecast-series-grid section > h3,
+.forecast-series-grid section > p {
+  margin-left: 2px;
 }
 
 .forecast-action {
@@ -2495,6 +2536,17 @@ a {
   font-weight: 700;
 
   color: #64748b;
+}
+
+.chat-message-status,
+.chat-message-metadata {
+  margin: 0 0 7px;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.chat-message-metadata {
+  margin: 8px 0 0;
 }
 
 .chat-message.user .chat-message-role {

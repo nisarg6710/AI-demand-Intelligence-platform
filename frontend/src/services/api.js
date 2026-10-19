@@ -19,10 +19,9 @@ export const getAnalytics = async (question) => {
   return response.data;
 };
 
-export const getForecast = async (question) => {
-  const response = await api.post("/forecast", {
-    question,
-  });
+export const getForecast = async (question, horizon = 3) => {
+  const payload = IS_PUBLIC_DEMO ? { question, horizon } : { question };
+  const response = await api.post("/forecast", payload);
 
   return response.data;
 };
