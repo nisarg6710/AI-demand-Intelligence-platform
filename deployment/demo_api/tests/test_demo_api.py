@@ -131,11 +131,14 @@ def test_health_and_sqlite_analytics_endpoints(client):
         assert payload["units"] == "units sold; not currency or revenue"
 
 
-def test_analytics_snapshot_unavailable_returns_safe_service_error(client, monkeypatch, tmp_path):
+def test_analytics_snapshot_unavailable_returns_safe_service_error(client, monkeypatch, tmp_path, caplog):
     monkeypatch.setenv("PUBLIC_DEMO_SNAPSHOT_DIR", str(tmp_path / "missing-snapshot"))
     response = client.get("/analytics/summary")
     assert response.status_code == 503
     assert response.json()["detail"] == "The public analytics snapshot is unavailable or invalid."
+    assert "stage=configuration" in caplog.text
+    assert "error_type=SnapshotUnavailable" in caplog.text
+    assert str(tmp_path) not in response.text
     readiness = client.get("/health")
     assert readiness.status_code == 503
     assert readiness.json()["detail"]["status"] == "not_ready"

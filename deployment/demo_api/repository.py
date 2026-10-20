@@ -21,7 +21,9 @@ from typing import Any
 
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+SERVICE_ROOT = Path(__file__).resolve().parent
 DEFAULT_SNAPSHOT_DIR = REPOSITORY_ROOT / "exports" / "public_demo"
+PACKAGED_SNAPSHOT_DIR = SERVICE_ROOT / "snapshot"
 SNAPSHOT_DIR_ENV = "PUBLIC_DEMO_SNAPSHOT_DIR"
 SUPPORTED_FORMAT_VERSION = 1
 SUPPORTED_CONTRACT_VERSION = "1.1.0"
@@ -91,6 +93,10 @@ WEEKDAY_ORDER = "CASE weekday WHEN 'Monday' THEN 1 WHEN 'Tuesday' THEN 2 WHEN 'W
 class SnapshotUnavailable(RuntimeError):
     """The active snapshot is missing, invalid, or incompatible."""
 
+    def __init__(self, message: str, *, stage: str = "snapshot_validation"):
+        super().__init__(message)
+        self.stage = stage
+
 
 def _schema_fingerprint(observed_schema: dict[str, Any]) -> str:
     canonical = []
@@ -123,16 +129,37 @@ class AggregateSnapshotRepository:
     """Validate one active generation and serve allowlisted read operations."""
 
     def __init__(self, snapshot_dir: str | Path | None = None):
+        self._diagnostic_stage = "configuration"
+        try:
+            self._initialize(snapshot_dir)
+        except SnapshotUnavailable as exc:
+            if exc.stage != "snapshot_validation":
+                raise
+            raise SnapshotUnavailable(str(exc), stage=self._diagnostic_stage) from exc
+
+    def _initialize(self, snapshot_dir: str | Path | None) -> None:
         configured = snapshot_dir
         if configured is None:
-            configured = os.environ.get(SNAPSHOT_DIR_ENV) or DEFAULT_SNAPSHOT_DIR
+            configured = os.environ.get(SNAPSHOT_DIR_ENV)
+            if configured is None:
+                # Prefer the normal local export when it exists. In a clean Render
+                # checkout only the packaged snapshot is available beneath rootDir.
+                configured = DEFAULT_SNAPSHOT_DIR if DEFAULT_SNAPSHOT_DIR.is_dir() else PACKAGED_SNAPSHOT_DIR
+        if isinstance(configured, str) and not configured.strip():
+            raise SnapshotUnavailable(
+                f"{SNAPSHOT_DIR_ENV} must not be empty or whitespace-only"
+            )
         try:
-            self.snapshot_dir = Path(configured).expanduser().resolve(strict=False)
+            configured_path = Path(configured).expanduser()
+            if not configured_path.is_absolute():
+                configured_path = SERVICE_ROOT / configured_path
+            self.snapshot_dir = configured_path.resolve(strict=False)
         except (OSError, RuntimeError) as exc:
             raise SnapshotUnavailable("Configured snapshot directory is invalid") from exc
         if not self.snapshot_dir.is_dir():
             raise SnapshotUnavailable("Configured snapshot directory is unavailable")
 
+        self._diagnostic_stage = "pointer_read"
         self.pointer_path = self.snapshot_dir / "aggregate_current.json"
         if self.pointer_path.is_symlink() or not self.pointer_path.is_file():
             raise SnapshotUnavailable("Active snapshot pointer is missing or unsafe")
@@ -140,8 +167,10 @@ class AggregateSnapshotRepository:
             self.manifest = json.loads(self.pointer_path.read_text(encoding="utf-8"))
         except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
             raise SnapshotUnavailable("Active snapshot pointer is malformed or unreadable") from exc
+        self._diagnostic_stage = "manifest_validation"
         self._validate_manifest()
 
+        self._diagnostic_stage = "database_resolution"
         database_name = self.manifest["outputs"]["database_file"]
         if (
             not isinstance(database_name, str)
@@ -167,6 +196,7 @@ class AggregateSnapshotRepository:
                 raise SnapshotUnavailable("Snapshot pointer size does not match its manifest")
         except OSError as exc:
             raise SnapshotUnavailable("Snapshot files could not be inspected") from exc
+        self._diagnostic_stage = "sqlite_validation"
         self._validate_database()
 
     @classmethod

@@ -226,3 +226,64 @@ def test_new_repository_reads_pointer_generation_changed_between_requests(snapsh
     assert first.metadata["snapshot_generation"] == original_generation
     assert subsequent_request.metadata["snapshot_generation"] == generation
     assert subsequent_request.summary()["data"][0]["total_sales"] == 10
+
+
+def test_relative_environment_path_is_resolved_from_service_root(snapshot_directory, tmp_path, monkeypatch):
+    service_root = tmp_path / "service"
+    service_root.mkdir()
+    shutil.copytree(snapshot_directory, service_root / "snapshot")
+    monkeypatch.setattr("deployment.demo_api.repository.SERVICE_ROOT", service_root)
+    monkeypatch.setenv("PUBLIC_DEMO_SNAPSHOT_DIR", "snapshot")
+    monkeypatch.chdir(tmp_path)
+
+    repository = AggregateSnapshotRepository.from_environment()
+
+    assert repository.snapshot_dir == (service_root / "snapshot").resolve()
+    assert repository.summary()["data"][0]["total_sales"] == 10
+
+
+@pytest.mark.parametrize("configured_value", ["", "   ", "\t\n"])
+def test_empty_or_whitespace_environment_path_fails_without_fallback(
+    snapshot_directory, monkeypatch, configured_value
+):
+    monkeypatch.setattr("deployment.demo_api.repository.DEFAULT_SNAPSHOT_DIR", snapshot_directory)
+    monkeypatch.setattr("deployment.demo_api.repository.PACKAGED_SNAPSHOT_DIR", snapshot_directory)
+    monkeypatch.setenv("PUBLIC_DEMO_SNAPSHOT_DIR", configured_value)
+
+    with pytest.raises(SnapshotUnavailable, match="must not be empty or whitespace-only") as error:
+        AggregateSnapshotRepository.from_environment()
+
+    assert error.value.stage == "configuration"
+
+
+def test_unset_environment_prefers_local_exports_when_both_sources_exist(
+    snapshot_directory, tmp_path, monkeypatch
+):
+    local_exports = tmp_path / "exports" / "public_demo"
+    packaged_snapshot = tmp_path / "service" / "snapshot"
+    local_exports.parent.mkdir(parents=True)
+    packaged_snapshot.parent.mkdir(parents=True)
+    shutil.copytree(snapshot_directory, local_exports)
+    shutil.copytree(snapshot_directory, packaged_snapshot)
+    monkeypatch.setattr("deployment.demo_api.repository.DEFAULT_SNAPSHOT_DIR", local_exports)
+    monkeypatch.setattr("deployment.demo_api.repository.PACKAGED_SNAPSHOT_DIR", packaged_snapshot)
+    monkeypatch.delenv("PUBLIC_DEMO_SNAPSHOT_DIR", raising=False)
+
+    repository = AggregateSnapshotRepository.from_environment()
+
+    assert repository.snapshot_dir == local_exports.resolve()
+
+
+def test_packaged_snapshot_is_fallback_when_local_exports_are_absent(snapshot_directory, tmp_path, monkeypatch):
+    service_root = tmp_path / "service"
+    service_root.mkdir()
+    shutil.copytree(snapshot_directory, service_root / "snapshot")
+    monkeypatch.setattr("deployment.demo_api.repository.SERVICE_ROOT", service_root)
+    monkeypatch.setattr("deployment.demo_api.repository.PACKAGED_SNAPSHOT_DIR", service_root / "snapshot")
+    monkeypatch.setattr("deployment.demo_api.repository.DEFAULT_SNAPSHOT_DIR", tmp_path / "missing-exports")
+    monkeypatch.delenv("PUBLIC_DEMO_SNAPSHOT_DIR", raising=False)
+
+    repository = AggregateSnapshotRepository.from_environment()
+
+    assert repository.snapshot_dir == (service_root / "snapshot").resolve()
+    assert repository.metadata["freshness_verified"] is False

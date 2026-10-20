@@ -11,6 +11,11 @@ schema, and snapshot before returning analytics. It does not create, repair, or
 replace the pointer or database. The snapshot manifest's
 `freshness_verified: false` status is preserved in analytics responses.
 
+Relative values for `PUBLIC_DEMO_SNAPSHOT_DIR` are resolved from the demo API
+service directory, independent of the process working directory. If the local
+export directory is absent and the variable is unset, the API uses the
+packaged `snapshot/` directory when present.
+
 The Render service must be supplied with a directory containing both files;
 the local `exports/public_demo/` directory is not a deployed data source by
 itself. No MySQL connection or production query engine is used by this API.
