@@ -288,21 +288,69 @@ def weekday_sales():
     return analytics_repository().weekday_performance()
 
 
+def _execute_routed_question(
+    route: ChatRoute,
+    question: str,
+    repository: AggregateSnapshotRepository,
+) -> dict[str, Any]:
+    if route.intent == "forecast_baseline":
+        forecast_result = _compute_forecast(question, route.horizon, repository)
+        return {**forecast_result, "data": forecast_result["forecast_periods"]}
+
+    operations = {
+        "summary": repository.summary,
+        "monthly_sales": repository.monthly_sales,
+        "top_stores": lambda: repository.store_performance(route.limit),
+        "top_products": lambda: repository.top_products(route.limit),
+        "category_performance": repository.category_performance,
+        "department_performance": repository.department_performance,
+        "weekday_performance": repository.weekday_performance,
+    }
+    return operations[route.intent]()
+
+
 @app.post("/analytics")
 def analytics(request: QuestionRequest):
     repository = analytics_repository()
-    return {
+    route = route_question(request.question)
+    if route.intent is None:
+        return {
+            "success": True,
+            "question": request.question,
+            "response": f"{route.reason} Snapshot freshness against MySQL is unverified.",
+            "supported": False,
+            "intent_status": route.status,
+            **repository.metadata,
+        }
+
+    try:
+        result = _execute_routed_question(route, request.question, repository)
+    except SnapshotUnavailable as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="The public analytics snapshot is unavailable or invalid.",
+        ) from exc
+
+    payload = {
         "success": True,
         "question": request.question,
-        "response": (
-            "Natural-language analytics queries are not executed by this demo. "
-            "The read-only snapshot supports overall summary, monthly sales, "
-            "store performance, top products, categories, departments, and "
-            "weekday totals through the analytics endpoints."
-        ),
-        "supported": False,
-        **repository.metadata,
+        "response": _format_chat_answer(route, result["data"]),
+        "supported": True,
+        "intent_status": "supported",
+        "intent": route.intent,
+        "data": result["data"],
+        **{key: result[key] for key in (
+            "data_source", "freshness_verified", "snapshot_generation", "units"
+        )},
     }
+    if route.intent == "forecast_baseline":
+        payload.update({
+            "method": result["method"],
+            "horizon": result["horizon"],
+            "forecast_periods": result["forecast_periods"],
+            "observed_period": result["observed_period"],
+        })
+    return payload
 
 
 # --------------------------------------------------
@@ -312,10 +360,14 @@ def analytics(request: QuestionRequest):
 @app.post("/forecast")
 def forecast(request: ForecastRequest):
     repository = analytics_repository()
+    return _compute_forecast(request.question, request.horizon, repository)
+
+
+def _compute_forecast(question: str, horizon: int, repository: AggregateSnapshotRepository) -> dict[str, Any]:
     try:
         monthly_result = repository.monthly_sales()
         observed_months, forecast_periods = seasonal_naive_forecast(
-            monthly_result["data"], request.horizon
+            monthly_result["data"], horizon
         )
     except ForecastUnavailable as exc:
         raise HTTPException(
@@ -337,10 +389,10 @@ def forecast(request: ForecastRequest):
     method = "seasonal_naive_12_month"
     return {
         "success": True,
-        "question": request.question,
+        "question": question,
         "selected_action": method,
         "response": (
-            f"Computed a {request.horizon}-month seasonal-naive baseline using each "
+            f"Computed a {horizon}-month seasonal-naive baseline using each "
             "month's units from 12 months earlier. Historical observations are "
             f"separate ({first['year']}-{first['month']:02d} through "
             f"{last['year']}-{last['month']:02d}); forecast periods are "
@@ -350,7 +402,7 @@ def forecast(request: ForecastRequest):
             "Sales are units sold, not revenue or currency, and snapshot freshness is unverified."
         ),
         "method": method,
-        "horizon": request.horizon,
+        "horizon": horizon,
         "observed_period": {
             "start": {"year": first["year"], "month": first["month"]},
             "end": {"year": last["year"], "month": last["month"]},
@@ -365,15 +417,20 @@ def forecast(request: ForecastRequest):
 
 
 @app.get("/forecast/predictions")
-def forecast_predictions():
+def forecast_predictions(horizon: int = Query(default=3, ge=1, le=12)):
+    repository = analytics_repository()
+    result = _compute_forecast("Computed public baseline forecast", horizon, repository)
     return {
         "success": True,
         "mode": "public_demo",
-        "message": (
-            "Question-specific model predictions are not generated by the "
-            "public demo. Historical sales snapshots are available instead."
-        ),
-        "data": [],
+        "message": result["response"],
+        "data": result["forecast_periods"],
+        "method": result["method"],
+        "horizon": result["horizon"],
+        "data_source": result["data_source"],
+        "freshness_verified": result["freshness_verified"],
+        "snapshot_generation": result["snapshot_generation"],
+        "units": result["units"],
     }
 
 
@@ -407,29 +464,21 @@ def chat(request: QuestionRequest):
             **repository.metadata,
         }
 
-    operations = {
-        "summary": repository.summary,
-        "monthly_sales": repository.monthly_sales,
-        "top_stores": lambda: repository.store_performance(route.limit),
-        "top_products": lambda: repository.top_products(route.limit),
-        "category_performance": repository.category_performance,
-        "department_performance": repository.department_performance,
-        "weekday_performance": repository.weekday_performance,
-    }
     try:
-        result = operations[route.intent]()
+        result = _execute_routed_question(route, request.question, repository)
+    except HTTPException:
+        raise
     except SnapshotUnavailable as exc:
         raise HTTPException(
             status_code=503,
             detail="The public analytics snapshot is unavailable or invalid.",
         ) from exc
 
-    response = _format_chat_answer(route, result["data"])
-    return {
+    payload = {
         "success": True,
         "question": request.question,
         "selected_agents": ["Deterministic Analytics Router"],
-        "response": response,
+        "response": _format_chat_answer(route, result["data"]),
         "supported": True,
         "answer_generated": True,
         "intent_status": "supported",
@@ -439,10 +488,29 @@ def chat(request: QuestionRequest):
             "data_source", "freshness_verified", "snapshot_generation", "units"
         )},
     }
+    if route.intent == "forecast_baseline":
+        payload.update({
+            "method": result["method"],
+            "horizon": result["horizon"],
+            "forecast_periods": result["forecast_periods"],
+            "observed_period": result["observed_period"],
+        })
+    return payload
 
 
 def _format_chat_answer(route: ChatRoute, rows: list[dict[str, Any]]) -> str:
     """Render a concise response using only rows returned by repository calls."""
+    if route.intent == "forecast_baseline":
+        periods = "; ".join(
+            f"{row['year']}-{row['month']:02d}: {row['predicted_units']:,} units"
+            for row in rows
+        )
+        return (
+            f"Computed a {route.horizon}-month seasonal-naive baseline using the read-only monthly snapshot. "
+            f"Forecast values: {periods}. This baseline repeats units from 12 months earlier; "
+            "it is not a trained model and has not been backtested. Sales are units sold, not revenue or currency. "
+            "Snapshot freshness against MySQL is unverified."
+        )
     if route.intent == "summary":
         row = rows[0]
         content = (

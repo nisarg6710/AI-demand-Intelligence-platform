@@ -13,6 +13,7 @@ MAX_RANKING_LIMIT = 100
 class ChatRoute:
     intent: str | None
     limit: int = 10
+    horizon: int = 1
     status: str = "supported"
     reason: str = ""
 
@@ -41,6 +42,11 @@ _INTENT_PATTERNS = {
     "weekday_performance": (
         r"\bweekdays?\b", r"\bday[s]?\s+of\s+(?:the\s+)?week\b",
         r"\b(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b",
+    ),
+    "forecast_baseline": (
+        r"\b(?:forecast|forecasting)\b.{0,60}\b(?:next|coming|future|month|months|sales|units|performance)\b",
+        r"\b(?:predict|predicting|prediction|predictions)\b.{0,60}\b(?:next|coming|future|month|months|sales|units|performance)\b",
+        r"\b(?:next|coming|future)\b.{0,40}\b(?:forecast|predict|prediction)\b",
     ),
     "summary": (
         r"\bsummary\b", r"\boverview\b", r"\boverall\b",
@@ -85,7 +91,7 @@ def route_question(question: str) -> ChatRoute:
         return ChatRoute(
             None,
             status="ambiguous",
-            reason="Please ask about one supported topic at a time: summary, monthly sales, stores, products, categories, departments, or weekdays.",
+            reason="Please ask about one supported topic at a time: summary, monthly sales, forecast baseline, stores, products, categories, departments, or weekdays.",
         )
     if not intents:
         return ChatRoute(
@@ -96,6 +102,7 @@ def route_question(question: str) -> ChatRoute:
 
     intent = intents[0]
     limit = 10
+    horizon = 1
     if intent in {"top_stores", "top_products"}:
         match = re.search(
             r"\btop\s+(\d+)\b|\b(\d+)\s+(?:top|best)\b|\blimit(?:\s+of)?\s+(\d+)\b",
@@ -104,4 +111,20 @@ def route_question(question: str) -> ChatRoute:
         if match:
             requested = int(next(group for group in match.groups() if group is not None))
             limit = min(max(requested, 1), MAX_RANKING_LIMIT)
-    return ChatRoute(intent, limit=limit)
+    elif intent == "forecast_baseline":
+        match = re.search(
+            r"\b(?:next|coming|for|over|horizon(?:\s+of)?)\s+(\d{1,3})\s+months?\b"
+            r"|\b(\d{1,3})[- ]month(?:ly)?\s+(?:forecast|prediction)\b"
+            r"|\b(?:forecast|predict\w*)\s+(?:for\s+)?(\d{1,3})\s+months?\b",
+            normalized,
+        )
+        if match:
+            requested = int(next(group for group in match.groups() if group is not None))
+            if not 1 <= requested <= 12:
+                return ChatRoute(
+                    None,
+                    status="unsupported",
+                    reason="The public baseline supports forecast horizons from 1 to 12 months.",
+                )
+            horizon = requested
+    return ChatRoute(intent, limit=limit, horizon=horizon)
