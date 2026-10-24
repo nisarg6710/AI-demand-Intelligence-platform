@@ -20,6 +20,31 @@ The Render service must be supplied with a directory containing both files;
 the local `exports/public_demo/` directory is not a deployed data source by
 itself. No MySQL connection or production query engine is used by this API.
 
+## Optional Gemini answers in Business Chat
+
+Deterministic analytics questions continue to query the validated read-only
+SQLite snapshot, and forecast questions continue to compute the seasonal-naive
+baseline described below. A narrow set of general project-capability questions
+(for example, how the project can help an organization) may use Gemini. Those
+answers use only a fixed project description and the bounded question; they do
+not query snapshot rows, MySQL, production agents, or arbitrary SQL.
+
+Gemini is not called unless both dedicated variables are configured. Set these
+in a local environment or in Render's service environment settings:
+
+```text
+DEMO_GEMINI_API_KEY=<your Gemini API key>
+DEMO_GEMINI_MODEL=<supported Gemini model name>
+```
+
+Never commit either value or put the key in a `VITE_` frontend variable. Store
+the key in Render's private environment settings. General business questions
+can consume Gemini quota when configured. Without the dedicated key and model,
+the API returns a fixed, clearly labelled project-capability fallback and makes
+no Gemini call. Snapshot-backed answers and AI-generated general explanations
+are labelled separately; neither implies that snapshot freshness has been
+verified.
+
 ## Public forecast baseline
 
 `POST /forecast` computes a seasonal-naive baseline from the read-only monthly

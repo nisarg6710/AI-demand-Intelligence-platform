@@ -12,7 +12,8 @@ from pydantic import BaseModel, Field
 
 try:  # Works both as ``uvicorn main:app`` and as a repository package import.
     from .repository import AggregateSnapshotRepository, SnapshotUnavailable
-    from .chat_router import ChatRoute, route_question
+    from .chat_router import ChatRoute, is_general_business_question, route_question
+    from .gemini_service import answer_general_business_question, is_configured as gemini_is_configured
     from .forecasting import (
         DEFAULT_FORECAST_HORIZON,
         MAX_FORECAST_HORIZON,
@@ -21,7 +22,8 @@ try:  # Works both as ``uvicorn main:app`` and as a repository package import.
     )
 except ImportError:  # pragma: no cover - exercised by Render's service root.
     from repository import AggregateSnapshotRepository, SnapshotUnavailable
-    from chat_router import ChatRoute, route_question
+    from chat_router import ChatRoute, is_general_business_question, route_question
+    from gemini_service import answer_general_business_question, is_configured as gemini_is_configured
     from forecasting import (
         DEFAULT_FORECAST_HORIZON,
         MAX_FORECAST_HORIZON,
@@ -41,7 +43,8 @@ app = FastAPI(
     title="AI Demand Intelligence Platform — Demo API",
     description=(
         "A public portfolio demo serving precomputed analytics snapshots. "
-        "It does not query the production database or call external AI APIs."
+        "It does not query the production database; optional Gemini explanations "
+        "are limited to general project-capability questions."
     ),
     version="1.0.0",
 )
@@ -208,7 +211,7 @@ def root():
         "mode": "public_demo",
         "data_mode": "sqlite_aggregate_snapshot_and_recorded_forecast_artifacts",
         "database_connected": False,
-        "external_ai_enabled": False,
+        "external_ai_enabled": gemini_is_configured(),
         "available_pages": [
             "Dashboard",
             "Forecasting",
@@ -453,6 +456,45 @@ def chat(request: QuestionRequest):
     repository = analytics_repository()
     route = route_question(request.question)
     if route.intent is None:
+        if route.status == "unsupported" and is_general_business_question(request.question):
+            answer = answer_general_business_question(request.question)
+            if answer is not None:
+                return {
+                    "success": True,
+                    "question": request.question,
+                    "selected_agents": ["Gemini Business Explainer"],
+                    "response": (
+                        f"{answer}\n\nThis is general guidance based only on the fixed project context; "
+                        "no live or snapshot measurements were queried. Snapshot freshness against MySQL is unverified."
+                    ),
+                    "supported": True,
+                    "answer_generated": True,
+                    "intent_status": "supported",
+                    "intent": "general_business",
+                    "answer_source": "gemini",
+                    "ai_generated": True,
+                    "data_source": "fixed_project_context",
+                    "freshness_verified": False,
+                }
+            return {
+                "success": False,
+                "question": request.question,
+                "selected_agents": ["Project Capability Fallback"],
+                "response": (
+                    "The optional Gemini explanation is unavailable because its dedicated demo provider "
+                    "is not configured or did not return a usable answer. The project supports historical "
+                    "sales analytics, demand forecasting, store and product performance analysis, and decision "
+                    "support. No live or snapshot measurements were queried."
+                ),
+                "supported": True,
+                "answer_generated": False,
+                "intent_status": "provider_unavailable",
+                "intent": "general_business",
+                "answer_source": "fixed_project_context_fallback",
+                "ai_generated": False,
+                "data_source": "fixed_project_context",
+                "freshness_verified": False,
+            }
         return {
             "success": False,
             "question": request.question,
@@ -461,6 +503,8 @@ def chat(request: QuestionRequest):
             "supported": False,
             "answer_generated": False,
             "intent_status": route.status,
+            "answer_source": "none",
+            "ai_generated": False,
             **repository.metadata,
         }
 
@@ -483,6 +527,8 @@ def chat(request: QuestionRequest):
         "answer_generated": True,
         "intent_status": "supported",
         "intent": route.intent,
+        "answer_source": "snapshot",
+        "ai_generated": False,
         "data": result["data"],
         **{key: result[key] for key in (
             "data_source", "freshness_verified", "snapshot_generation", "units"

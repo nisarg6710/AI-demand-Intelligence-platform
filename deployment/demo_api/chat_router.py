@@ -1,4 +1,4 @@
-"""Deterministic intent routing for the public demo's fixed analytics API."""
+"""Deterministic analytics routing and narrow business-question classification."""
 
 from __future__ import annotations
 
@@ -64,6 +64,25 @@ _UNSUPPORTED_PATTERNS = (
     r"\b(?:system prompt|reveal|act as|pretend to be|bypass)\b",
 )
 
+_SPECIFIC_PERIOD_PATTERNS = (
+    r"\b(?:today|yesterday|tomorrow|latest|current(?:ly)?|most recent)\b",
+    r"\b(?:last|this|previous|past)\s+(?:calendar\s+)?(?:month|week|day|quarter|year|period)\b",
+    r"\bhow much\b.{0,60}\b(?:sell|sold|sales|units)\b",
+)
+
+_GENERAL_BUSINESS_PATTERNS = (
+    r"\bhow\s+(?:can|could|does|might)\s+(?:this|the)\s+(?:project|platform|system)\s+(?:help|support|benefit)\b",
+    r"\bwhat\s+(?:can|does)\s+(?:this|the)\s+(?:project|platform|system)\s+do\b",
+    r"\b(?:business|organizational)\s+(?:benefits?|use cases?|value)\b",
+    r"\bhow\s+(?:can|could)\s+(?:an organization|the organization|a business|the business|our organization)\b.{0,100}\b(?:benefit|use|apply|adopt|support)\b",
+)
+
+_GENERAL_BUSINESS_DATA_TERMS = (
+    r"\b(?:sales|units|revenue|profit|forecast|prediction|customer|transaction|store|product|category|department|weekday)\b",
+    r"\b(?:current|latest|today|yesterday|historical|history|last month|this month|date range|specific period)\b",
+    r"\b(?:data|metric|measurement|number|figure|result|trend|performance|snapshot|sql|database|query)\b",
+)
+
 
 def _matches(question: str, patterns: tuple[str, ...]) -> bool:
     return any(re.search(pattern, question) for pattern in patterns)
@@ -72,6 +91,15 @@ def _matches(question: str, patterns: tuple[str, ...]) -> bool:
 def route_question(question: str) -> ChatRoute:
     """Classify only supported aggregate questions; never interprets SQL."""
     normalized = " ".join(question.casefold().split())
+    if _matches(normalized, _SPECIFIC_PERIOD_PATTERNS):
+        return ChatRoute(
+            None,
+            status="unsupported",
+            reason=(
+                "This demo cannot answer current or specific-period measurements. "
+                "Ask for a supported aggregate such as the overall summary or monthly trend."
+            ),
+        )
     if _matches(normalized, _UNSUPPORTED_PATTERNS):
         return ChatRoute(
             None,
@@ -128,3 +156,17 @@ def route_question(question: str) -> ChatRoute:
                 )
             horizon = requested
     return ChatRoute(intent, limit=limit, horizon=horizon)
+
+
+def is_general_business_question(question: str) -> bool:
+    """Match a narrow, data-independent project-capabilities question."""
+    if not isinstance(question, str) or len(question) > 1000:
+        return False
+    normalized = " ".join(question.casefold().split())
+    if _matches(normalized, _SPECIFIC_PERIOD_PATTERNS):
+        return False
+    if _matches(normalized, _UNSUPPORTED_PATTERNS):
+        return False
+    if _matches(normalized, _GENERAL_BUSINESS_DATA_TERMS):
+        return False
+    return _matches(normalized, _GENERAL_BUSINESS_PATTERNS)

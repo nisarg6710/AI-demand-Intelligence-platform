@@ -55,16 +55,20 @@ function Chat() {
       setSelectedAgents(result.selected_agents || []);
 
       const supported = result.success === true && result.supported === true;
-      const metadata = result.snapshot_generation
-        ? `Snapshot ${result.snapshot_generation} · freshness unverified · ${result.units || "units sold"}`
-        : null;
+      const metadata = result.answer_source === "gemini"
+        ? "Gemini-generated general guidance · no snapshot measurements queried"
+        : result.snapshot_generation
+          ? `Snapshot ${result.snapshot_generation} · freshness unverified · ${result.units || "units sold"}`
+          : null;
 
       setMessages((previous) => [
         ...previous,
         {
           role: "assistant",
           content: result.response,
-          status: supported ? "answer" : result.intent_status || "unsupported",
+          status: supported
+            ? result.answer_source === "gemini" ? "ai_answer" : "answer"
+            : result.intent_status || "unsupported",
           metadata,
         },
       ]);
@@ -113,14 +117,14 @@ function Chat() {
           <h1>{IS_PUBLIC_DEMO ? "Business Chat Demo" : "AI Business Chat"}</h1>
           <p>
             {IS_PUBLIC_DEMO
-              ? "Demo interactions only. Responses do not call Gemini, query the live database, or run production agents."
+              ? "Snapshot analytics and forecasts are deterministic. General project questions may use Gemini when configured; no live database or production agents are used."
               : "Ask natural-language questions about your retail data through the local production assistant."}
           </p>
         </div>
 
         <div className="dashboard-status">
           <span className="status-dot"></span>
-          {IS_PUBLIC_DEMO ? "Demo Interaction" : "AI Intelligence"}
+          {IS_PUBLIC_DEMO ? "Hybrid Demo" : "AI Intelligence"}
         </div>
       </div>
 
@@ -163,7 +167,7 @@ function Chat() {
             <h2>{IS_PUBLIC_DEMO ? "Demo Assistant" : "Business Intelligence Assistant"}</h2>
             <p>
               {IS_PUBLIC_DEMO
-                ? "Ask about the available snapshots. This demo does not query live data or invoke an AI assistant."
+                ? "Ask about snapshot metrics for deterministic answers, or general project-capability questions for optional Gemini guidance."
                 : "Ask about sales, forecasting, stores, products, and business performance."}
             </p>
           </div>
@@ -195,7 +199,7 @@ function Chat() {
               </h3>
 
               <p>
-                The public demo returns an explanatory response. It does not execute the production AI agent system.
+                Analytics and forecasts use the read-only snapshot. General project guidance may use Gemini when configured; it does not use live business measurements.
               </p>
 
             </div>
@@ -228,9 +232,13 @@ function Chat() {
                         <p className="chat-message-status">
                           {message.status === "answer"
                             ? "Snapshot-grounded answer"
-                            : message.status === "ambiguous"
-                              ? "Please clarify"
-                              : "Unsupported question"}
+                            : message.status === "ai_answer"
+                              ? "AI-generated general guidance"
+                              : message.status === "provider_unavailable"
+                                ? "Gemini unavailable · fixed project information"
+                                : message.status === "ambiguous"
+                                  ? "Please clarify"
+                                  : "Unsupported question"}
                         </p>
                       )}
                       <div className="markdown-content">
